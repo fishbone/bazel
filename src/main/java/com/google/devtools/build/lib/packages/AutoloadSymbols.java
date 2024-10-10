@@ -405,7 +405,7 @@ public class AutoloadSymbols {
                   toImmutableMap(
                       ModuleKey::name,
                       moduleKey -> moduleKey,
-                      (m1, m2) -> m1.version().compareTo(m2.version()) >= 0 ? m1 : m1));
+                      (m1, m2) -> m1.version().compareTo(m2.version()) >= 0 ? m1 : m2));
       RepositoryMapping repositoryMapping =
           RepositoryMapping.create(
               highestVersions.entrySet().stream()
@@ -605,7 +605,7 @@ public class AutoloadSymbols {
           "rules_java_builtin",
           "rules_python",
           "rules_python_internal",
-          "rules_sh",
+          "rules_shell",
           "apple_common",
           "bazel_skylib",
           "bazel_tools",
@@ -615,7 +615,10 @@ public class AutoloadSymbols {
 
   static {
     try {
-      requiredVersions = ImmutableMap.of("protobuf", Version.parse("29.0-rc1"));
+      requiredVersions =
+          ImmutableMap.of(
+              "protobuf", Version.parse("29.0-rc1"), //
+              "rules_android", Version.parse("0.6.0-rc1"));
     } catch (ParseException e) {
       throw new IllegalStateException(e);
     }
@@ -785,9 +788,9 @@ public class AutoloadSymbols {
           .put("py_library", ruleRedirect("@rules_python//python:py_library.bzl"))
           .put("py_runtime", ruleRedirect("@rules_python//python:py_runtime.bzl"))
           .put("py_test", ruleRedirect("@rules_python//python:py_test.bzl"))
-          .put("sh_binary", ruleRedirect("@rules_sh//sh:sh_binary.bzl"))
-          .put("sh_library", ruleRedirect("@rules_sh//sh:sh_library.bzl"))
-          .put("sh_test", ruleRedirect("@rules_sh//sh:sh_test.bzl"))
+          .put("sh_binary", ruleRedirect("@rules_shell//shell:sh_binary.bzl"))
+          .put("sh_library", ruleRedirect("@rules_shell//shell:sh_library.bzl"))
+          .put("sh_test", ruleRedirect("@rules_shell//shell:sh_test.bzl"))
           .put("available_xcodes", ruleRedirect("@apple_support//xcode:available_xcodes.bzl"))
           .put("xcode_config", ruleRedirect("@apple_support//xcode:xcode_config.bzl"))
           .put("xcode_config_alias", ruleRedirect("@apple_support//xcode:xcode_config_alias.bzl"))
