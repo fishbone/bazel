@@ -107,8 +107,6 @@ public final class TestSuiteRule implements RuleDefinition {
             attr("$implicit_tests", LABEL_LIST)
                 .orderIndependent()
                 .nonconfigurable("Accessed in TestTargetUtils without config context"))
-        // Remove unused common attributes.
-        .removeAttribute(RuleClass.TARGET_COMPATIBLE_WITH_ATTR)
         .build();
   }
 
