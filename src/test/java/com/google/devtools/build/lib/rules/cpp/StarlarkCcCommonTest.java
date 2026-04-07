@@ -7312,7 +7312,6 @@ public class StarlarkCcCommonTest extends BuildViewTestCase {
             + "feature_configuration=feature_configuration, cc_toolchain=toolchain, %s)";
     ImmutableList<String> calls =
         ImmutableList.of(
-            String.format(callFormatString, "link_artifact_name_suffix='test'"),
             String.format(callFormatString, "never_link=False"),
             String.format(callFormatString, "test_only_target=False"),
             String.format(callFormatString, "always_link=False"),
