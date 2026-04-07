@@ -60,8 +60,9 @@ public final class OptionsClassProcessor extends AbstractProcessor {
   private void generateWrapper(TypeElement typeElement) {
     String packageName =
         processingEnv.getElementUtils().getPackageOf(typeElement).getQualifiedName().toString();
-    String className = typeElement.getSimpleName().toString();
-    String implClassName = className + "Impl";
+    String className =
+        typeElement.getQualifiedName().toString().substring(packageName.length() + 1);
+    String implClassName = className.replace('.', '_') + "Impl";
 
     record OptionInfo(String fieldType, String capitalizedFieldName, boolean hasSetterInBase) {}
     List<OptionInfo> options = new ArrayList<>();

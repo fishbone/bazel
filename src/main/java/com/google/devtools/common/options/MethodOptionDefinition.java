@@ -45,8 +45,8 @@ public class MethodOptionDefinition extends OptionDefinition {
       Class<? extends OptionsBase> optionsClass) {
     Verify.verify(optionsClass.isAnnotationPresent(OptionsClass.class));
     String packageName = optionsClass.getPackage().getName();
-    String simpleName = optionsClass.getSimpleName();
-    String implClassName = packageName + "." + simpleName + "Impl";
+    String className = optionsClass.getName().substring(packageName.length() + 1);
+    String implClassName = packageName + "." + className.replace('$', '_') + "Impl";
     try {
       return Class.forName(implClassName).asSubclass(OptionsBase.class);
     } catch (ClassNotFoundException e) {

@@ -15,9 +15,11 @@ package com.google.devtools.common.options.processor;
 
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
+import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 
 import com.google.common.io.Resources;
 import com.google.testing.compile.JavaFileObjects;
+import java.util.Arrays;
 import javax.tools.JavaFileObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,6 +93,14 @@ public class OptionsClassProcessorTest {
   public void validOptionsClassCompiles() {
     assertAbout(javaSource())
         .that(getFile("ValidOptions.java"))
+        .processedWith(new OptionsClassProcessor())
+        .compilesWithoutError();
+  }
+
+  @Test
+  public void nestedOptionsClassesWithSameSimpleNameCompile() {
+    assertAbout(javaSources())
+        .that(Arrays.asList(getFile("Outer1.java"), getFile("Outer2.java")))
         .processedWith(new OptionsClassProcessor())
         .compilesWithoutError();
   }
