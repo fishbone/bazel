@@ -7752,7 +7752,7 @@ public class StarlarkCcCommonTest extends BuildViewTestCase {
         "cc_rule = rule(",
         "  implementation = _impl,",
         "  attrs = { ",
-        "    '_artifact': attr.label(allow_single_file=True, default=Label('//b:foo.soifso')),",
+        "    '_artifact': attr.label(allow_single_file=True, default=Label('//b:foo.soif.so')),",
         "    '_cc_toolchain': attr.label(default=Label('//b:alias'))",
         "  },",
         "  fragments = ['cpp'],",
