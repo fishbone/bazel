@@ -186,6 +186,7 @@ public final class RemoteAnalysisCacheFactory {
             env.getReporter(),
             options.getMode(),
             options.getAnalysisCacheBailOnMissingFingerprint(),
+            options.getSkycacheMinimizeMemory(),
             servicesSupplier,
             env.getRemoteAnalysisCachingEventListener(),
             jsonLogWriter,
