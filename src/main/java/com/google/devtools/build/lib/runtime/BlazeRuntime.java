@@ -1861,16 +1861,28 @@ public final class BlazeRuntime implements BugReport.BlazeRuntimeInterface {
       return this;
     }
 
+    public OptionsParsingResult getStartupOptionsProvider() {
+      return startupOptionsProvider;
+    }
+
     @CanIgnoreReturnValue
     public Builder addBlazeModule(BlazeModule blazeModule) {
       blazeModules.add(blazeModule);
       return this;
     }
 
+    public ImmutableList<BlazeModule> getBlazeModules() {
+      return ImmutableList.copyOf(blazeModules);
+    }
+
     @CanIgnoreReturnValue
     public Builder addBlazeService(BlazeService blazeService) {
       blazeServices.add(blazeService);
       return this;
+    }
+
+    public ImmutableList<BlazeService> getBlazeServices() {
+      return ImmutableList.copyOf(blazeServices);
     }
 
     @CanIgnoreReturnValue
