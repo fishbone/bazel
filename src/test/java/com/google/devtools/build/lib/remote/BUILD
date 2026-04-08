@@ -241,6 +241,8 @@ java_test(
         "-Djol.magicFieldOffset=true",
         # Match the Bazel startup flags.
         "-XX:+UseCompactObjectHeaders",
+        # Required for Mockito.spy.
+        "--add-opens=java.base/java.io=ALL-UNNAMED",
     ],
     test_class = "com.google.devtools.build.lib.AllTests",
     runtime_deps = [
