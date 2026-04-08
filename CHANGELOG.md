@@ -1,3 +1,24 @@
+## Release 10.0.0-pre.20260329.2 (2026-04-08)
+
+```
+Baseline: b06b3774e7c5380756a2a0ce4d052afb7a5bbbe1
+
+Cherry picks:
+
+   + ba43bbd393f89bf1ebda1ec309018c9a7faec0fd:
+     Rollback of `PersistentStringIndexer` change.
+```
+
+Important changes:
+
+  - Module extension tags now have an implicit `_sort_key` field that
+    can be compared to derive the order in which tags from different
+    classes appear in the MODULE.bazel file.
+  - The remote repo contents cache now supports all reproducible repo
+    rules.
+
+This release contains contributions from many people at Google, as well as Armando Montanez, Chris Jakins, dependabot[bot], Fabian Meumertzheim, John Cater, Keith Smiley.
+
 ## Release 10.0.0-pre.20260322.2 (2026-04-01)
 
 ```
