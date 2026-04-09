@@ -3137,7 +3137,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
         getDirectPrerequisite(getConfiguredTarget("//test/starlark:test"), "//test/starlark:main1");
     // When --platforms is empty and no platform mapping triggers, PlatformMappingValue sets
     // --platforms to PlatformOptions.computeTargetPlatform(), which defaults to the host.
-    assertThat(getConfiguration(dep).getOptions().get(PlatformOptions.class).platforms)
+    assertThat(getConfiguration(dep).getOptions().get(PlatformOptions.class).getPlatforms())
         .containsExactly(Label.parseCanonicalUnchecked(TestConstants.PLATFORM_LABEL));
   }
 
@@ -3205,7 +3205,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
     useConfiguration("--platforms=//platforms:my_platform");
     ConfiguredTarget dep =
         getDirectPrerequisite(getConfiguredTarget("//test/starlark:test"), "//test/starlark:main1");
-    assertThat(getConfiguration(dep).getOptions().get(PlatformOptions.class).platforms)
+    assertThat(getConfiguration(dep).getOptions().get(PlatformOptions.class).getPlatforms())
         .containsExactly(Label.parseCanonicalUnchecked("//platforms:my_other_platform"));
   }
 
@@ -3264,7 +3264,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
     useConfiguration("--platforms=//platforms:my_platform");
     ConfiguredTarget dep =
         getDirectPrerequisite(getConfiguredTarget("//test/starlark:test"), "//test/starlark:main1");
-    assertThat(getConfiguration(dep).getOptions().get(PlatformOptions.class).platforms)
+    assertThat(getConfiguration(dep).getOptions().get(PlatformOptions.class).getPlatforms())
         .containsExactly(Label.parseCanonicalUnchecked("//platforms:my_platform"));
   }
 

@@ -372,7 +372,7 @@ public class CommandEnvironment {
       }
     }
     if (command.buildPhase().analyzes() || command.name().equals("info")) {
-      for (Converters.EnvVar envVar : options.getOptions(TestOptions.class).testEnvironment) {
+      for (Converters.EnvVar envVar : options.getOptions(TestOptions.class).getTestEnvironment()) {
         if (envVar instanceof Converters.EnvVar.Inherit(String name)) {
           visibleTestEnv.add(name);
         }
@@ -880,7 +880,7 @@ public class CommandEnvironment {
         keepStateAfterBuildOption.keepStateAfterBuild,
         commonOptions.getTrackIncrementalState(),
         commonOptions.getHeuristicallyDropNodes(),
-        analysisOptions != null && analysisOptions.discardAnalysisCache,
+        analysisOptions != null && analysisOptions.getDiscardAnalysisCache(),
         reporter);
   }
 

@@ -111,7 +111,7 @@ public final class QuiescingExecutorsImpl implements QuiescingExecutors {
     this.globbingParallelism = packageOptions != null ? packageOptions.globbingThreads : 0;
     var analysisOptions = options.getOptions(AnalysisOptions.class);
     this.cpuHeavySkyKeysThreadPoolSize =
-        analysisOptions != null ? analysisOptions.cpuHeavySkyKeysThreadPoolSize : 0;
+        analysisOptions != null ? analysisOptions.getCpuHeavySkyKeysThreadPoolSize() : 0;
   }
 
   @Override

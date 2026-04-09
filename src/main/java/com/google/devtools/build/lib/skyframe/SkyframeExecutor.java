@@ -1569,7 +1569,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
     // Get the current target platform and use it as the exec platform.
     // This value isn't actually important as long as it exists and is stable.
     // TODO(345289271): Make this a value that's stable even when the target platform changes.
-    Label hostPlatform = buildOptions.get(PlatformOptions.class).hostPlatform;
+    Label hostPlatform = buildOptions.get(PlatformOptions.class).getHostPlatform();
     return adjustForExec(buildOptions, execTransition, hostPlatform, eventHandler);
   }
 
@@ -2985,7 +2985,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
       throws InterruptedException, AbruptExitException {
     getActionEnvFromOptions(options.getOptions(CoreOptions.class));
     var platformOptions = options.getOptions(PlatformOptions.class);
-    platformMappingKey = platformOptions != null ? platformOptions.platformMappingKey : null;
+    platformMappingKey = platformOptions != null ? platformOptions.getPlatformMappingKey() : null;
     RemoteOptions remoteOptions = options.getOptions(RemoteOptions.class);
     setRemoteExecutionEnabled(remoteOptions != null && remoteOptions.isRemoteExecutionEnabled());
     cpuBoundSemaphore.set(getUpdatedSkyFunctionsSemaphore(options));
@@ -3016,7 +3016,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
       return cpuBoundSemaphore.get(); // Leaves as-is.
     }
 
-    int newSize = analysisOptions.oomSensitiveSkyFunctionsSemaphoreSize;
+    int newSize = analysisOptions.getOomSensitiveSkyFunctionsSemaphoreSize();
     if (newSize == 0) {
       return null;
     }

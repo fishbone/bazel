@@ -112,8 +112,8 @@ public class BazelRuleClassProvider {
   @VisibleForTesting
   @Nullable
   public static PathFragment getDefaultPathFromOptions(ShellConfiguration.Options options) {
-    if (options.shellExecutable != null) {
-      return options.shellExecutable;
+    if (options.getShellExecutable() != null) {
+      return options.getShellExecutable();
     }
 
     // Honor BAZEL_SH env variable for backwards compatibility.

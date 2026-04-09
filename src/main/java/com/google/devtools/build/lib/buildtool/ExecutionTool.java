@@ -433,7 +433,7 @@ public class ExecutionTool {
     boolean buildCompleted = false;
     try {
       boolean shouldDiscardAnalysisCache =
-          request.getViewOptions().discardAnalysisCache
+          request.getViewOptions().getDiscardAnalysisCache()
               || !skyframeExecutor.tracksStateForIncrementality();
       if (shouldDiscardAnalysisCache) {
         if (skyframeExecutor
