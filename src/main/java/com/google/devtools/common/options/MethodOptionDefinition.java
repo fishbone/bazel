@@ -48,7 +48,8 @@ public class MethodOptionDefinition extends OptionDefinition {
     String className = optionsClass.getName().substring(packageName.length() + 1);
     String implClassName = packageName + "." + className.replace('$', '_') + "Impl";
     try {
-      return Class.forName(implClassName).asSubclass(OptionsBase.class);
+      return Class.forName(implClassName, true, optionsClass.getClassLoader())
+          .asSubclass(OptionsBase.class);
     } catch (ClassNotFoundException e) {
       throw new IllegalStateException(e); // The annotation processor should have been run
     }
