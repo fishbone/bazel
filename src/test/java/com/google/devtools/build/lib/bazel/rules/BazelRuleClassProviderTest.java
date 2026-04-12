@@ -190,13 +190,13 @@ public class BazelRuleClassProviderTest extends BuildViewTestCase {
       // This Bazel build doesn't include StrictActionEnvOptions. Nothing to test.
       return;
     }
-    strictActionEnvOptions.useStrictActionEnv = true;
+    strictActionEnvOptions.setUseStrictActionEnv(true);
 
     StrictActionEnvOptions h =
         AnalysisTestUtil.execOptions(options, skyframeExecutor, reporter)
             .get(StrictActionEnvOptions.class);
 
-    assertThat(h.useStrictActionEnv).isTrue();
+    assertThat(h.getUseStrictActionEnv()).isTrue();
   }
 
   @Test

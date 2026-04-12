@@ -58,6 +58,7 @@ import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
 import com.google.devtools.common.options.OptionMetadataTag;
+import com.google.devtools.common.options.OptionsClass;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -67,7 +68,8 @@ import net.starlark.java.eval.Starlark;
 /** A rule class provider implementing the rules Bazel knows. */
 public class BazelRuleClassProvider {
   /** Command-line options. */
-  public static class StrictActionEnvOptions extends FragmentOptions {
+  @OptionsClass
+  public abstract static class StrictActionEnvOptions extends FragmentOptions {
     @Option(
         name = "incompatible_strict_action_env",
         oldName = "experimental_strict_action_env",
@@ -82,7 +84,9 @@ public class BazelRuleClassProvider {
             inherit specific environment variables from the client, but note that doing so
             can prevent cross-user caching if a shared cache is used.
             """)
-    public boolean useStrictActionEnv;
+    public abstract boolean getUseStrictActionEnv();
+
+    public abstract void setUseStrictActionEnv(boolean value);
   }
 
   private static final PathFragment FALLBACK_SHELL = PathFragment.create("/bin/bash");
@@ -139,7 +143,7 @@ public class BazelRuleClassProvider {
         if (options.hasNoConfig()) {
           return ActionEnvironment.EMPTY;
         }
-        boolean strictActionEnv = options.get(StrictActionEnvOptions.class).useStrictActionEnv;
+        boolean strictActionEnv = options.get(StrictActionEnvOptions.class).getUseStrictActionEnv();
         OS os = OS.getCurrent();
         // TODO(ulfjack): instead of using the OS Bazel runs on, we need to use the exec platform,
         // which may be different for remote execution. For now, this can be overridden with

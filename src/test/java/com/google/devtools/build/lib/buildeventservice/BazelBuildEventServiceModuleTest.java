@@ -63,6 +63,7 @@ import com.google.devtools.build.lib.testutil.TestConstants;
 import com.google.devtools.build.lib.util.AbruptExitException;
 import com.google.devtools.build.lib.util.ExitCode;
 import com.google.devtools.build.skyframe.NotifyingHelper;
+import com.google.devtools.common.options.Options;
 import com.google.testing.junit.testparameterinjector.TestParameter;
 import com.google.testing.junit.testparameterinjector.TestParameterInjector;
 import io.grpc.ManagedChannel;
@@ -755,7 +756,7 @@ public final class BazelBuildEventServiceModuleTest extends BuildIntegrationTest
   public void testMakeGrpcMetadata() throws Exception {
     runBuildWithOptions();
     BuildEventServiceOptions besOptions = new BuildEventServiceOptions();
-    AuthAndTLSOptions authAndTLSOptions = new AuthAndTLSOptions();
+    AuthAndTLSOptions authAndTLSOptions = Options.getDefaults(AuthAndTLSOptions.class);
     besOptions.besBackend = "bes-backend";
     besOptions.besProxy = "bes-proxy";
     besOptions.besHeaders =

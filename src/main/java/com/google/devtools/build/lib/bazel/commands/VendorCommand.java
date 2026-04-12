@@ -154,7 +154,8 @@ public final class VendorCommand implements BlazeCommand {
     VendorOptions vendorOptions = options.getOptions(VendorOptions.class);
     LoadingPhaseThreadsOption threadsOption = options.getOptions(LoadingPhaseThreadsOption.class);
     Path vendorDirectory =
-        env.getWorkspace().getRelative(options.getOptions(RepositoryOptions.class).vendorDirectory);
+        env.getWorkspace()
+            .getRelative(options.getOptions(RepositoryOptions.class).getVendorDirectory());
     this.vendorManager = new VendorManager(vendorDirectory);
     List<String> targets;
     try {
@@ -165,13 +166,13 @@ public final class VendorCommand implements BlazeCommand {
     }
     try {
       if (!targets.isEmpty()) {
-        if (!vendorOptions.repos.isEmpty()) {
+        if (!vendorOptions.getRepos().isEmpty()) {
           return createFailedBlazeCommandResult(
               env.getReporter(), "Target patterns and --repo cannot both be specified");
         }
         result = vendorTargets(env, options, targets);
-      } else if (!vendorOptions.repos.isEmpty()) {
-        result = vendorRepos(env, threadsOption, vendorOptions.repos);
+      } else if (!vendorOptions.getRepos().isEmpty()) {
+        result = vendorRepos(env, threadsOption, vendorOptions.getRepos());
       } else {
         result = vendorAll(env, threadsOption);
       }
@@ -192,7 +193,7 @@ public final class VendorCommand implements BlazeCommand {
 
   @Nullable
   private BlazeCommandResult validateOptions(CommandEnvironment env, OptionsParsingResult options) {
-    if (options.getOptions(RepositoryOptions.class).vendorDirectory == null) {
+    if (options.getOptions(RepositoryOptions.class).getVendorDirectory() == null) {
       return createFailedBlazeCommandResult(
           env.getReporter(),
           Code.OPTIONS_INVALID,

@@ -385,7 +385,10 @@ public class HttpCacheClientTest {
 
       HttpCacheClient blobStore =
           createHttpBlobStore(
-              server, /* timeoutSeconds= */ 1, /* creds= */ null, new AuthAndTLSOptions());
+              server,
+              /* timeoutSeconds= */ 1,
+              /* creds= */ null,
+              Options.getDefaults(AuthAndTLSOptions.class));
 
       ByteString data = ByteString.copyFrom("foo bar", StandardCharsets.UTF_8);
       Digest digest = DIGEST_UTIL.compute(data.toByteArray());

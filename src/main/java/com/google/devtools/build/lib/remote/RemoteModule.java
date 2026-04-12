@@ -550,7 +550,7 @@ public final class RemoteModule extends BlazeModule {
                   .setEventReporter(env.getReporter())
                   .setWorkspacePath(env.getWorkspace())
                   .setClientEnvironment(env.getClientEnv())
-                  .setHelperExecutionTimeout(authAndTlsOptions.credentialHelperTimeout)
+                  .setHelperExecutionTimeout(authAndTlsOptions.getCredentialHelperTimeout())
                   .build(),
               credentialModule.getCredentialCache(),
               env.getCommandLinePathFactory(),
