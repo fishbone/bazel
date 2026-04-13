@@ -297,8 +297,8 @@ public final class BlazeOptionHandler {
     ListMultimap<String, RcChunkOfArgs> commandToRcArgs =
         structureRcOptionsAndConfigs(
             eventHandler,
-            rcFileOptions.rcSource,
-            rcFileOptions.optionsOverrides,
+            rcFileOptions.getRcSource(),
+            rcFileOptions.getOptionsOverrides(),
             runtime.getCommandMap().keySet());
     parseRcOptions(eventHandler, commandToRcArgs);
 

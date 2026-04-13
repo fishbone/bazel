@@ -327,7 +327,7 @@ public class CommandEnvironment {
             options.getOptions(ClientOptions.class),
             "CommandEnvironment needs its options provider to have ClientOptions loaded.");
 
-    this.clientEnv = makeMapFromMapEntries(clientOptions.clientEnv);
+    this.clientEnv = makeMapFromMapEntries(clientOptions.getClientEnv());
     this.commandId = computeCommandId(commandOptions.getInvocationId(), warnings, attemptNumber);
     this.buildRequestId =
         commandOptions.getBuildRequestId() != null

@@ -60,9 +60,9 @@ import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
 import com.google.devtools.common.options.OptionsBase;
+import com.google.devtools.common.options.OptionsClass;
 import com.google.devtools.common.options.OptionsParsingResult;
 import com.google.protobuf.TextFormat;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,10 +79,9 @@ import java.util.Set;
     allowResidue = true)
 public final class PrintActionCommand implements BlazeCommand {
 
-  /**
-   * Options for print_action, used to parse command-line arguments.
-   */
-  public static class PrintActionOptions extends OptionsBase {
+  /** Options for print_action, used to parse command-line arguments. */
+  @OptionsClass
+  public abstract static class PrintActionOptions extends OptionsBase {
     @Option(
         name = "print_action_mnemonics",
         allowMultiple = true,
@@ -92,7 +91,7 @@ public final class PrintActionCommand implements BlazeCommand {
         help =
             "Lists which mnemonics to filter print_action data by, no filtering takes place "
                 + "when left empty.")
-    public List<String> printActionMnemonics = new ArrayList<>();
+    public abstract List<String> getPrintActionMnemonics();
   }
 
   @Override
@@ -107,7 +106,7 @@ public final class PrintActionCommand implements BlazeCommand {
             options,
             env.getReporter().getOutErr(),
             options.getResidue(),
-            Sets.newHashSet(printActionOptions.printActionMnemonics));
+            Sets.newHashSet(printActionOptions.getPrintActionMnemonics()));
     return BlazeCommandResult.detailedExitCode(runner.printActionsForTargets(env));
   }
 
