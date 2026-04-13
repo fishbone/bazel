@@ -199,7 +199,7 @@ public final class VendorCommand implements BlazeCommand {
           Code.OPTIONS_INVALID,
           "You cannot run the vendor command without specifying --vendor_dir");
     }
-    if (!options.getOptions(PackageOptions.class).fetch) {
+    if (!options.getOptions(PackageOptions.class).getFetch()) {
       return createFailedBlazeCommandResult(
           env.getReporter(),
           Code.OPTIONS_INVALID,

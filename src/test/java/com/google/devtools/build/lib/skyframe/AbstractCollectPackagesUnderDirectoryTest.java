@@ -292,7 +292,7 @@ public abstract class AbstractCollectPackagesUnderDirectoryTest {
         PathPackageLocator.createWithoutExistenceCheck(
             directories.getOutputBase(), ImmutableList.of(root), getBuildFileNamesByPriority());
     PackageOptions packageOptions = Options.getDefaults(PackageOptions.class);
-    packageOptions.packagePath = ImmutableList.of(getWorkspacePathString());
+    packageOptions.setPackagePath(ImmutableList.of(getWorkspacePathString()));
     scratch.file("tools/BUILD");
     scratch.file("tools/empty_prelude.bzl");
     ruleClassProvider =

@@ -101,9 +101,13 @@ public final class PrintActionCommand implements BlazeCommand {
         options.getOptions(LoadingOptions.class);
 
     PrintActionOptions printActionOptions = options.getOptions(PrintActionOptions.class);
-    PrintActionRunner runner = new PrintActionRunner(loadingOptions.compileOneDependency, options,
-        env.getReporter().getOutErr(),
-        options.getResidue(), Sets.newHashSet(printActionOptions.printActionMnemonics));
+    PrintActionRunner runner =
+        new PrintActionRunner(
+            loadingOptions.getCompileOneDependency(),
+            options,
+            env.getReporter().getOutErr(),
+            options.getResidue(),
+            Sets.newHashSet(printActionOptions.printActionMnemonics));
     return BlazeCommandResult.detailedExitCode(runner.printActionsForTargets(env));
   }
 

@@ -285,7 +285,7 @@ public class BazelRepositoryModule extends BlazeModule {
     repoEnvSupplier.set(env.getRepoEnv());
     nonstrictRepoEnvSupplier.set(env.getNonstrictRepoEnv());
     PackageOptions pkgOptions = env.getOptions().getOptions(PackageOptions.class);
-    fetchDisabled = pkgOptions != null && !pkgOptions.fetch;
+    fetchDisabled = pkgOptions != null && !pkgOptions.getFetch();
 
     ProcessWrapper processWrapper = ProcessWrapper.fromCommandEnvironment(env);
     repositoryFetchFunction.setProcessWrapper(processWrapper);

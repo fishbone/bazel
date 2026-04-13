@@ -1723,13 +1723,13 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
     setCommandId(commandId);
     this.clientEnv.set(clientEnv);
 
-    setShowLoadingProgress(packageOptions.showLoadingProgress);
-    setDefaultVisibility(packageOptions.defaultVisibility);
-    if (!packageOptions.enforceConfigSettingVisibility) {
+    setShowLoadingProgress(packageOptions.getShowLoadingProgress());
+    setDefaultVisibility(packageOptions.getDefaultVisibility());
+    if (!packageOptions.getEnforceConfigSettingVisibility()) {
       setConfigSettingVisibilityPolicty(ConfigSettingVisibilityPolicy.LEGACY_OFF);
     } else {
       setConfigSettingVisibilityPolicty(
-          packageOptions.configSettingPrivateDefaultVisibility
+          packageOptions.getConfigSettingPrivateDefaultVisibility()
               ? ConfigSettingVisibilityPolicy.DEFAULT_STANDARD
               : ConfigSettingVisibilityPolicy.DEFAULT_PUBLIC);
     }
@@ -1739,12 +1739,12 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
     setSiblingDirectoryLayout(
         starlarkSemantics.getBool(BuildLanguageOptions.EXPERIMENTAL_SIBLING_REPOSITORY_LAYOUT));
     setPackageLocator(pkgLocator);
-    setLazyMacroExpansionPackages(packageOptions.lazyMacroExpansionPackages);
+    setLazyMacroExpansionPackages(packageOptions.getLazyMacroExpansionPackages());
     setStampSettingMarker();
 
     this.pkgFactory.setGlobbingThreads(executors.globbingParallelism());
     this.pkgFactory.setMaxDirectoriesToEagerlyVisitInGlobbing(
-        packageOptions.maxDirectoriesToEagerlyVisitInGlobbing);
+        packageOptions.getMaxDirectoriesToEagerlyVisitInGlobbing());
     emittedEventState.clear();
 
     // Clear internal caches used by SkyFunctions used for package loading. If the SkyFunctions
@@ -3046,7 +3046,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
           tsgm);
     }
     try (SilentCloseable c = Profiler.instance().profile("setDeletedPackages")) {
-      setDeletedPackages(packageOptions.getDeletedPackages());
+      setDeletedPackages(packageOptions.getDeletedPackagesOrEmptySet());
     }
 
     incrementalBuildMonitor = new SkyframeIncrementalBuildMonitor();
@@ -3173,12 +3173,12 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
         TargetPatternPhaseValue.key(
             ImmutableList.copyOf(targetPatterns),
             relativeWorkingDirectory,
-            options.compileOneDependency,
-            options.buildTestsOnly,
+            options.getCompileOneDependency(),
+            options.getBuildTestsOnly(),
             determineTests,
-            ImmutableList.copyOf(options.buildTagFilterList),
-            options.buildManualTests,
-            options.expandTestSuites,
+            ImmutableList.copyOf(options.getBuildTagFilterList()),
+            options.getBuildManualTests(),
+            options.getExpandTestSuites(),
             TestFilter.forOptions(options));
     return getTargetPatternPhaseValue(eventHandler, targetPatterns, threadCount, keepGoing, key);
   }
@@ -3655,7 +3655,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
       dropConfiguredTargetsNow(eventHandler);
       lastAnalysisDiscarded = false;
     }
-    packageOptions.checkOutputFiles = false;
+    packageOptions.setCheckOutputFiles(false);
     ClassToInstanceMap<OptionsBase> options =
         ImmutableClassToInstanceMap.of(PackageOptions.class, packageOptions);
     handleDiffs(
@@ -3773,9 +3773,9 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
           eventHandler,
           tsgm,
           pathEntriesWithoutDiffInformation,
-          packageOptions.checkOutputFiles,
+          packageOptions.getCheckOutputFiles(),
           repoOptions != null && repoOptions.getCheckExternalRepositoryFiles(),
-          packageOptions.checkExternalOtherFiles,
+          packageOptions.getCheckExternalOtherFiles(),
           fsvcThreads);
     } finally {
       if (scheduledExecutorService != null && diffCheckNotificationFuture != null) {

@@ -141,8 +141,8 @@ public abstract class ConfigurationTestCase extends FoundationTestCase {
             .addAll(analysisMock.getPrecomputedValues())
             .build());
     PackageOptions packageOptions = Options.getDefaults(PackageOptions.class);
-    packageOptions.showLoadingProgress = true;
-    packageOptions.globbingThreads = 7;
+    packageOptions.setShowLoadingProgress(true);
+    packageOptions.setGlobbingThreads(7);
     OptionsParser parser =
         OptionsParser.builder().optionsClasses(BuildLanguageOptions.class).build();
     parser.parse(TestConstants.PRODUCT_SPECIFIC_BUILD_LANG_OPTIONS);

@@ -525,7 +525,7 @@ public class ExecutionTool {
               request.getBuildOptions().getFinalizeActions());
       informedOutputServiceToStartTheBuild = true;
     }
-    if (!request.getPackageOptions().checkOutputFiles) {
+    if (!request.getPackageOptions().getCheckOutputFiles()) {
       // Do not skip output invalidation if the output tree is empty: this can happen after it's
       // cleaned or corrupted.
       if (!modifiedOutputFiles.treatEverythingAsDeleted()) {

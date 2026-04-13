@@ -146,7 +146,7 @@ public final class FetchCommand implements BlazeCommand {
   @Nullable
   private BlazeCommandResult validateOptions(CommandEnvironment env, OptionsParsingResult options) {
     PackageOptions pkgOptions = options.getOptions(PackageOptions.class);
-    if (!pkgOptions.fetch) {
+    if (!pkgOptions.getFetch()) {
       return createFailedBlazeCommandResult(
           env.getReporter(), Code.OPTIONS_INVALID, "You cannot run fetch with --nofetch");
     }
