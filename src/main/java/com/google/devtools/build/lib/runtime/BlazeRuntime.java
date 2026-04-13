@@ -379,10 +379,10 @@ public final class BlazeRuntime implements BugReport.BlazeRuntimeInterface {
         if (commandOptions.getProfilePath() == null) {
           String profileName = "command.profile.gz";
           format = Format.JSON_TRACE_FILE_COMPRESSED_FORMAT;
-          if (bepOptions != null && bepOptions.streamingLogFileUploads) {
+          if (bepOptions != null && bepOptions.getStreamingLogFileUploads()) {
             profile =
                 instrumentationOutputFactory.createBuildEventArtifactInstrumentationOutput(
-                    profileName, newUploader(env, bepOptions.buildEventUploadStrategy));
+                    profileName, newUploader(env, bepOptions.getBuildEventUploadStrategy()));
           } else if (commandOptions.getRedirectLocalInstrumentationOutputWrites()) {
             profile =
                 instrumentationOutputFactory.createInstrumentationOutput(

@@ -429,7 +429,7 @@ public final class SkyframeActionExecutor {
   }
 
   boolean publishTargetSummaries() {
-    return options.getOptions(BuildEventProtocolOptions.class).publishTargetSummary;
+    return options.getOptions(BuildEventProtocolOptions.class).getPublishTargetSummary();
   }
 
   public boolean rewindingEnabled() {

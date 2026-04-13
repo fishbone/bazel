@@ -938,7 +938,7 @@ public class ExecutionGraphModule extends BlazeModule {
       throws InvalidPackagePathSymlinkException {
     return env.getRuntime()
         .getBuildEventArtifactUploaderFactoryMap()
-        .select(bepOptions.buildEventUploadStrategy)
+        .select(bepOptions.getBuildEventUploadStrategy())
         .create(env);
   }
 
@@ -949,12 +949,12 @@ public class ExecutionGraphModule extends BlazeModule {
         checkNotNull(parsingResult.getOptions(BuildEventProtocolOptions.class));
     ExecutionGraphOptions executionGraphOptions =
         checkNotNull(parsingResult.getOptions(ExecutionGraphOptions.class));
-    if (bepOptions.streamingLogFileUploads
+    if (bepOptions.getStreamingLogFileUploads()
         && executionGraphOptions.executionGraphLogPath.isBlank()) {
       return new StreamingActionDumpWriter(
           env.getRuntime().getBugReporter(),
           env.getEventBus(),
-          env.getOptions().getOptions(LocalExecutionOptions.class).localLockfreeOutput,
+          env.getOptions().getOptions(LocalExecutionOptions.class).getLocalLockfreeOutput(),
           executionGraphOptions.logFileWriteEdges,
           newUploader(env, bepOptions).startUpload(LocalFileType.PERFORMANCE_LOG, null),
           executionGraphOptions.depType,
@@ -971,7 +971,7 @@ public class ExecutionGraphModule extends BlazeModule {
       return new FilesystemActionDumpWriter(
           env.getRuntime().getBugReporter(),
           env.getEventBus(),
-          env.getOptions().getOptions(LocalExecutionOptions.class).localLockfreeOutput,
+          env.getOptions().getOptions(LocalExecutionOptions.class).getLocalLockfreeOutput(),
           executionGraphOptions.logFileWriteEdges,
           actionGraphFile,
           executionGraphOptions.depType,

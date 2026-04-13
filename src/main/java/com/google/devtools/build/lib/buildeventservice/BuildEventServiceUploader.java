@@ -549,7 +549,7 @@ public final class BuildEventServiceUploader implements Runnable {
               throw new BuildEventUploadException(
                   streamStatus, bpCode, "not retrying publishBuildEvents");
             }
-            if (retryAttempt == buildEventProtocolOptions.besUploadMaxRetries) {
+            if (retryAttempt == buildEventProtocolOptions.getBesUploadMaxRetries()) {
               throw new BuildEventUploadException(
                   streamStatus,
                   BuildProgress.Code.BES_UPLOAD_RETRY_LIMIT_EXCEEDED_FAILURE,
@@ -637,7 +637,7 @@ public final class BuildEventServiceUploader implements Runnable {
       throws BuildEventUploadException, InterruptedException {
     int retryAttempt = 0;
     StreamException cause = null;
-    while (retryAttempt <= this.buildEventProtocolOptions.besUploadMaxRetries) {
+    while (retryAttempt <= this.buildEventProtocolOptions.getBesUploadMaxRetries()) {
       try {
         besClient.publish(commandContext, lifecycleEvent);
         return;
@@ -731,7 +731,7 @@ public final class BuildEventServiceUploader implements Runnable {
     Preconditions.checkArgument(attempt >= 0, "attempt must be nonnegative: %s", attempt);
     // This somewhat matches the backoff used for gRPC connection backoffs.
     return (long)
-        (this.buildEventProtocolOptions.besUploadRetryInitialDelay.toMillis()
+        (this.buildEventProtocolOptions.getBesUploadRetryInitialDelay().toMillis()
             * Math.pow(1.6, attempt));
   }
 
@@ -899,4 +899,3 @@ public final class BuildEventServiceUploader implements Runnable {
     }
   }
 }
-

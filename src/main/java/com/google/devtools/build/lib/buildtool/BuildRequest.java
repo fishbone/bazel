@@ -418,7 +418,7 @@ public class BuildRequest implements OptionsProvider {
     BuildRequestOptions buildOptions = getBuildOptions();
     return new TopLevelArtifactContext(
         getOptions(ExecutionOptions.class).getTestStrategy().equals("exclusive"),
-        getOptions(BuildEventProtocolOptions.class).expandFilesets,
+        getOptions(BuildEventProtocolOptions.class).getExpandFilesets(),
         OutputGroupInfo.determineOutputGroups(
             buildOptions.getOutputGroups(),
             validationMode(),

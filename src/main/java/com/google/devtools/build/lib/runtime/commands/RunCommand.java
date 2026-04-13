@@ -380,8 +380,9 @@ public class RunCommand implements BlazeCommand {
           .post(
               new ExecRequestEvent(
                   execRequest.build(),
-                  /* redactedArgv= */ options.getOptions(BuildEventProtocolOptions.class)
-                          .includeResidueInRunBepEvent
+                  /* redactedArgv= */ options
+                          .getOptions(BuildEventProtocolOptions.class)
+                          .getIncludeResidueInRunBepEvent()
                       ? ImmutableList.copyOf(execRequest.getArgvList())
                       : getArgvWithoutResidue(
                           env, runCommandLine, builtTargets.configuration, builtTargets.stopTime)));
