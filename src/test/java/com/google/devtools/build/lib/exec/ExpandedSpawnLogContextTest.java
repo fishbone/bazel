@@ -80,7 +80,7 @@ public final class ExpandedSpawnLogContextTest extends SpawnLogContextTestBase {
       ImmutableMap<String, String> platformProperties, Predicate<Spawn> logSpawnPredicate)
       throws IOException, InterruptedException {
     RemoteOptions remoteOptions = Options.getDefaults(RemoteOptions.class);
-    remoteOptions.remoteDefaultExecProperties = platformProperties.entrySet().asList();
+    remoteOptions.setRemoteDefaultExecPropertiesField(platformProperties.entrySet().asList());
 
     return new ExpandedSpawnLogContext(
         logPath,
