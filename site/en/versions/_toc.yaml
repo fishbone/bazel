@@ -1,8 +1,4 @@
 toc:
-- path: /versions/9.1.0
-  label: 9.1.0
-- path: /versions/9.0.0
-  label: 9.0.0
 - label: '8.6'
   path: /versions/8.6.0
 - label: '8.5'
@@ -17,3 +13,5 @@ toc:
   path: /versions/7.7.0
 - label: '6.6'
   path: /versions/6.6.0
+- label: "5.4.1"
+  path: https://docs.bazel.build/versions/5.4.1/bazel-overview.html
