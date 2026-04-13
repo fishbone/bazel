@@ -1379,7 +1379,7 @@ public final class BlazeRuntime implements BugReport.BlazeRuntimeInterface {
     CustomFailureDetailPublisher.setFailureDetailFilePath(failureDetailOut.getPathString());
 
     for (BlazeService service : blazeServices) {
-      service.globalInit(options);
+      service.globalInit(options, blazeServices);
     }
 
     for (BlazeModule module : blazeModules) {

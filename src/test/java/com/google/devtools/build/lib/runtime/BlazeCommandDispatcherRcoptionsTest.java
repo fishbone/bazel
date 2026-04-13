@@ -112,7 +112,7 @@ public class BlazeCommandDispatcherRcoptionsTest {
     OptionsParsingResult startupOptionsProvider =
         OptionsParser.builder().optionsClasses(BlazeServerStartupOptions.class).build();
     for (var service : BAZEL_SERVICES) {
-      service.globalInit(startupOptionsProvider);
+      service.globalInit(startupOptionsProvider, BAZEL_SERVICES);
     }
     ServerDirectories serverDirectories =
         new ServerDirectories(

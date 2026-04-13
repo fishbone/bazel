@@ -357,7 +357,7 @@ public abstract class BuildIntegrationTestCase {
     var startupOptions = builder.getStartupOptionsProvider();
     var blazeServices = builder.getBlazeServices();
     for (BlazeService blazeService : blazeServices) {
-      blazeService.globalInit(startupOptions);
+      blazeService.globalInit(startupOptions, blazeServices);
     }
     for (BlazeModule blazeModule : builder.getBlazeModules()) {
       blazeModule.globalInit(startupOptions, blazeServices);

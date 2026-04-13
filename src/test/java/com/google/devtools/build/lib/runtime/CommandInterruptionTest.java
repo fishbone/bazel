@@ -383,7 +383,7 @@ public final class CommandInterruptionTest {
     OptionsParsingResult startupOptionsProvider =
         OptionsParser.builder().optionsClasses(BlazeServerStartupOptions.class).build();
     for (var service : BAZEL_SERVICES) {
-      service.globalInit(startupOptionsProvider);
+      service.globalInit(startupOptionsProvider, BAZEL_SERVICES);
     }
     Scratch scratch = new Scratch();
     isTestShuttingDown = new AtomicBoolean(false);
