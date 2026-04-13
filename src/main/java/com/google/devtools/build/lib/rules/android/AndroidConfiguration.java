@@ -503,19 +503,6 @@ public class AndroidConfiguration extends Fragment implements AndroidConfigurati
     public abstract boolean getCompressJavaResources();
 
     @Option(
-        name = "experimental_android_databinding_v2",
-        defaultValue = "true",
-        documentationCategory = OptionDocumentationCategory.OUTPUT_PARAMETERS,
-        effectTags = {
-          OptionEffectTag.AFFECTS_OUTPUTS,
-          OptionEffectTag.LOADING_AND_ANALYSIS,
-          OptionEffectTag.LOSES_INCREMENTAL_STATE,
-        },
-        metadataTags = OptionMetadataTag.EXPERIMENTAL,
-        help = "Use android databinding v2. This flag is a no-op.")
-    public abstract boolean getDataBindingV2();
-
-    @Option(
         name = "android_databinding_use_v3_4_args",
         defaultValue = "true",
         documentationCategory = OptionDocumentationCategory.OUTPUT_PARAMETERS,
