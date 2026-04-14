@@ -141,7 +141,7 @@ public class GenQuery implements RuleConfiguredTargetFactory {
       ruleContext.attributeError("opts", "option --keep_going is not allowed");
       return null;
     }
-    if (!queryOptions.universeScope.isEmpty()) {
+    if (!queryOptions.getUniverseScope().isEmpty()) {
       ruleContext.attributeError("opts", "option --universe_scope is not allowed");
       return null;
     }
@@ -162,16 +162,16 @@ public class GenQuery implements RuleConfiguredTargetFactory {
       return null;
     }
     // Genquery should always use AUTO, while build isn't affected by query options, .
-    queryOptions.useGraphlessQuery = TriState.AUTO;
+    queryOptions.setUseGraphlessQuery(TriState.AUTO);
 
     // force relative_locations to true so it has a deterministic output across machines.
-    queryOptions.relativeLocations = true;
+    queryOptions.setRelativeLocations(true);
 
     if (!optionsParser.containsExplicitOption("nodep_deps")) {
       // Have GenQuery *not* include "nodep" deps by default. This is an unfortunate divergence from
       // `query` which is necessary to maintain legacy behavior.
       // TODO(b/123122592): Complete the migration and remove this divergence.
-      queryOptions.includeNoDepDeps = false;
+      queryOptions.setIncludeNoDepDeps(false);
     }
 
     GenQueryResult result;
@@ -269,21 +269,21 @@ public class GenQuery implements RuleConfiguredTargetFactory {
 
       formatter =
           OutputFormatters.getFormatter(
-              OutputFormatters.getDefaultFormatters(), queryOptions.outputFormat);
+              OutputFormatters.getDefaultFormatters(), queryOptions.getOutputFormat());
       if (formatter == null) {
         ruleContext.ruleError(
             String.format(
                 "Invalid output format '%s'. Valid values are: %s",
-                queryOptions.outputFormat,
+                queryOptions.getOutputFormat(),
                 OutputFormatters.formatterNames(OutputFormatters.getDefaultFormatters())));
         return null;
       }
       graphlessQuery = formatter instanceof StreamedFormatter;
       if (graphlessQuery) {
-        queryOptions.orderOutput = OrderOutput.NO;
+        queryOptions.setOrderOutput(OrderOutput.NO);
       } else {
         // Force results to be deterministic.
-        queryOptions.orderOutput = OrderOutput.FULL;
+        queryOptions.setOrderOutput(OrderOutput.FULL);
       }
 
       queryEnvironment =
@@ -346,7 +346,9 @@ public class GenQuery implements RuleConfiguredTargetFactory {
           result,
           formatter,
           outputStream,
-          queryOptions.aspectDeps.createResolver(packageProvider, getEventHandler(ruleContext)),
+          queryOptions
+              .getAspectDeps()
+              .createResolver(packageProvider, getEventHandler(ruleContext)),
           getEventHandler(ruleContext),
           hashFunction,
           queryEnvironment.getLabelPrinter());

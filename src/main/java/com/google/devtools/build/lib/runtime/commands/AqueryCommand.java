@@ -82,7 +82,7 @@ public final class AqueryCommand implements BlazeCommand {
     // TODO(twerth): Reduce overlap with CqueryCommand.
     AqueryOptions aqueryOptions = options.getOptions(AqueryOptions.class);
     QueryCommandUtils.resetDeserializedKeysFromRemoteAnalysisCache(env);
-    boolean queryCurrentSkyframeState = aqueryOptions.queryCurrentSkyframeState;
+    boolean queryCurrentSkyframeState = aqueryOptions.getQueryCurrentSkyframeState();
 
     TargetPattern.Parser mainRepoTargetParser;
     try {
@@ -129,7 +129,7 @@ public final class AqueryCommand implements BlazeCommand {
     try {
       topLevelTargets =
           QueryCommandUtils.getTopLevelTargets(
-              aqueryOptions.universeScope, expr, queryCurrentSkyframeState);
+              aqueryOptions.getUniverseScope(), expr, queryCurrentSkyframeState);
     } catch (QueryException e) {
       env.getReporter().handle(Event.error(e.getMessage()));
       return createFailureResult(

@@ -133,21 +133,21 @@ public abstract class QueryEnvironmentBasedCommand implements BlazeCommand {
 
     Iterable<OutputFormatter> formatters = runtime.getQueryOutputFormatters();
     OutputFormatter formatter =
-        OutputFormatters.getFormatter(formatters, queryOptions.outputFormat);
+        OutputFormatters.getFormatter(formatters, queryOptions.getOutputFormat());
     if (formatter == null) {
       return reportAndCreateFailureResult(
           env,
           String.format(
               "Invalid output format '%s'. Valid values are: %s",
-              queryOptions.outputFormat, OutputFormatters.formatterNames(formatters)),
+              queryOptions.getOutputFormat(), OutputFormatters.formatterNames(formatters)),
           Query.Code.OUTPUT_FORMAT_INVALID);
     }
 
     Set<Setting> settings = queryOptions.toSettings();
     boolean streamResults = QueryOutputUtils.shouldStreamResults(queryOptions, formatter);
     boolean useGraphlessQuery =
-        queryOptions.useGraphlessQuery == TriState.YES
-            || (queryOptions.useGraphlessQuery == TriState.AUTO && streamResults);
+        queryOptions.getUseGraphlessQuery() == TriState.YES
+            || (queryOptions.getUseGraphlessQuery() == TriState.AUTO && streamResults);
     if (useGraphlessQuery && !streamResults) {
       return reportAndCreateFailureResult(
           env,
@@ -219,10 +219,11 @@ public abstract class QueryEnvironmentBasedCommand implements BlazeCommand {
   }
 
   private static UniverseScope getUniverseScope(QueryOptions queryOptions) {
-    if (!queryOptions.universeScope.isEmpty()) {
-      return UniverseScope.fromUniverseScopeList(ImmutableList.copyOf(queryOptions.universeScope));
+    if (!queryOptions.getUniverseScope().isEmpty()) {
+      return UniverseScope.fromUniverseScopeList(
+          ImmutableList.copyOf(queryOptions.getUniverseScope()));
     }
-    return queryOptions.inferUniverseScope
+    return queryOptions.getInferUniverseScope()
         ? UniverseScope.INFER_FROM_QUERY_EXPRESSION
         : UniverseScope.EMPTY;
   }
