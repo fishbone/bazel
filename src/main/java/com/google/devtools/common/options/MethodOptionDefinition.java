@@ -173,4 +173,9 @@ public class MethodOptionDefinition extends OptionDefinition {
   public String getMemberName() {
     return method.getName();
   }
+
+  @Override
+  public String toString() {
+    return String.format("option '--%s'", getOptionName());
+  }
 }
