@@ -661,7 +661,7 @@ public final class BlazeRuntime implements BugReport.BlazeRuntimeInterface {
               options.getMemoryProfileStableHeapParameters(),
               env.getOptions()
                   .getOptions(MemoryPressureOptions.class)
-                  .jvmHeapHistogramInternalObjectPattern
+                  .getJvmHeapHistogramInternalObjectPattern()
                   .regexPattern());
       try {
         MemoryProfiler.instance().start(memoryProfilePath.getOutputStream());
@@ -673,7 +673,9 @@ public final class BlazeRuntime implements BugReport.BlazeRuntimeInterface {
 
     boolean stateKeptAfterBuild =
         !env.getCommandName().equals("clean")
-            && env.getOptions().getOptions(KeepStateAfterBuildOption.class).keepStateAfterBuild;
+            && env.getOptions()
+                .getOptions(KeepStateAfterBuildOption.class)
+                .getKeepStateAfterBuild();
     env.addIdleTask(new GcAndInternerShrinkingIdleTask(stateKeptAfterBuild));
 
     if (options.getInstallBaseGcMaxAge() != null && !options.getInstallBaseGcMaxAge().isZero()) {
@@ -808,7 +810,7 @@ public final class BlazeRuntime implements BugReport.BlazeRuntimeInterface {
     // next build anyway.
     KeepStateAfterBuildOption keepStateAfterBuildOption =
         env.getOptions().getOptions(KeepStateAfterBuildOption.class);
-    if (!keepStateAfterBuildOption.keepStateAfterBuild && !forceKeepStateForTesting) {
+    if (!keepStateAfterBuildOption.getKeepStateAfterBuild() && !forceKeepStateForTesting) {
       workspace.getSkyframeExecutor().resetEvaluator();
     }
 

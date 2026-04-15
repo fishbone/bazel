@@ -328,7 +328,7 @@ public class ExecutionTool {
           skyframeBuilder.getFileCache(),
           skyframeBuilder.getActionInputPrefetcher(),
           actionExecutionSalt,
-          env.getOptions().getOptions(UiOptions.class).maxStdoutErrBytes);
+          env.getOptions().getOptions(UiOptions.class).getMaxStdoutErrBytes());
     }
     skyframeExecutor.setSaltAndDeleteActionsIfChanged(actionExecutionSalt);
     try (SilentCloseable c =

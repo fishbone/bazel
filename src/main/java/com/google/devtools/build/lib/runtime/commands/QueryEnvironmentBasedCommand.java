@@ -104,14 +104,14 @@ public abstract class QueryEnvironmentBasedCommand implements BlazeCommand {
     QueryOptions queryOptions = options.getOptions(QueryOptions.class);
 
     LoadingPhaseThreadsOption threadsOption = options.getOptions(LoadingPhaseThreadsOption.class);
-    boolean keepGoing = options.getOptions(KeepGoingOption.class).keepGoing;
+    boolean keepGoing = options.getOptions(KeepGoingOption.class).getKeepGoing();
 
     TargetPattern.Parser mainRepoTargetParser;
     try {
       env.syncPackageLoading(options);
       RepositoryMapping repoMapping =
           env.getSkyframeExecutor()
-              .getMainRepoMapping(keepGoing, threadsOption.threads, env.getReporter());
+              .getMainRepoMapping(keepGoing, threadsOption.getThreads(), env.getReporter());
       mainRepoTargetParser =
           new Parser(env.getRelativeWorkingDirectory(), RepositoryName.MAIN, repoMapping);
     } catch (RepositoryMappingResolutionException e) {
@@ -177,7 +177,7 @@ public abstract class QueryEnvironmentBasedCommand implements BlazeCommand {
               env.getSkyframeExecutor()
                   .maybeGetHardcodedUniverseScope()
                   .orElse(getUniverseScope(queryOptions)),
-              threadsOption.threads,
+              threadsOption.getThreads(),
               settings,
               useGraphlessQuery,
               mainRepoTargetParser,

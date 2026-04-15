@@ -213,7 +213,7 @@ public final class VendorCommand implements BlazeCommand {
       throws InterruptedException, IOException {
     EvaluationContext evaluationContext =
         EvaluationContext.newBuilder()
-            .setParallelism(threadsOption.threads)
+            .setParallelism(threadsOption.getThreads())
             .setEventHandler(env.getReporter())
             .build();
 

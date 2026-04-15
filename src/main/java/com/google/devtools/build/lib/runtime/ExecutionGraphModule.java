@@ -77,6 +77,7 @@ import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
 import com.google.devtools.common.options.OptionsBase;
+import com.google.devtools.common.options.OptionsClass;
 import com.google.devtools.common.options.OptionsParsingResult;
 import com.google.protobuf.CodedOutputStream;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -104,7 +105,8 @@ public class ExecutionGraphModule extends BlazeModule {
   private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
 
   /** Options for the generated execution graph. */
-  public static class ExecutionGraphOptions extends OptionsBase {
+  @OptionsClass
+  public abstract static class ExecutionGraphOptions extends OptionsBase {
     @Option(
         name = "experimental_enable_execution_graph_log",
         documentationCategory = OptionDocumentationCategory.UNDOCUMENTED,
@@ -115,7 +117,7 @@ public class ExecutionGraphModule extends BlazeModule {
                 + "Note that this dump may use a different granularity of actions than other APIs, "
                 + "and may also contain additional information as necessary to reconstruct the "
                 + "full dependency graph in combination with other sources of data.")
-    public boolean enableExecutionGraphLog;
+    public abstract boolean getEnableExecutionGraphLog();
 
     @Option(
         name = "experimental_execution_graph_log_path",
@@ -129,7 +131,7 @@ public class ExecutionGraphModule extends BlazeModule {
                 + " this is unset while BEP uploads are disabled and"
                 + " experimental_enable_execution_graph_log is enabled, the log will be written to"
                 + " a local default.")
-    public String executionGraphLogPath;
+    public abstract String getExecutionGraphLogPath();
 
     @Option(
         name = "experimental_execution_graph_log_dep_type",
@@ -140,7 +142,7 @@ public class ExecutionGraphModule extends BlazeModule {
         help =
             "Selects what kind of dependency information is reported in the action dump. If 'all',"
                 + " every inter-action edge will be reported.")
-    public DependencyInfo depType;
+    public abstract DependencyInfo getDepType();
 
     @Option(
         name = "experimental_execution_graph_log_queue_size",
@@ -151,7 +153,7 @@ public class ExecutionGraphModule extends BlazeModule {
             "The size of the action dump queue, where actions are kept before writing. Larger"
                 + " sizes will increase peak memory usage, but should decrease queue blocking. -1"
                 + " means unbounded")
-    public int queueSize;
+    public abstract int getQueueSize();
 
     @Option(
         name = "execution_graph_log_queued_bytes_limit",
@@ -162,7 +164,7 @@ public class ExecutionGraphModule extends BlazeModule {
             "The maximum number of bytes that can be enqueued at a time in the action dump queue."
                 + " -1 means unbounded. Setting this can limit peak memory at the cost of stalling"
                 + " execution threads.")
-    public int queuedBytesLimit;
+    public abstract int getQueuedBytesLimit();
 
     @Option(
         name = "experimental_execution_graph_enable_edges_from_filewrite_actions",
@@ -170,7 +172,7 @@ public class ExecutionGraphModule extends BlazeModule {
         effectTags = {OptionEffectTag.UNKNOWN},
         defaultValue = "true",
         help = "Handle edges from filewrite actions to their inputs correctly.")
-    public boolean logFileWriteEdges;
+    public abstract boolean getLogFileWriteEdges();
 
     @Option(
         name = "experimental_execution_graph_include_change_pruned_actions",
@@ -178,7 +180,7 @@ public class ExecutionGraphModule extends BlazeModule {
         effectTags = {OptionEffectTag.UNKNOWN},
         defaultValue = "false",
         help = "Whether to include change pruned actions in execution graph.")
-    public boolean includeChangePrunedActions;
+    public abstract boolean getIncludeChangePrunedActions();
   }
 
   /** What level of dependency information to include in the dump. */
@@ -235,9 +237,9 @@ public class ExecutionGraphModule extends BlazeModule {
           checkNotNull(
               env.getOptions().getOptions(ExecutionGraphOptions.class),
               "ExecutionGraphOptions must be present for ExecutionGraphModule");
-      if (options.enableExecutionGraphLog) {
+      if (options.getEnableExecutionGraphLog()) {
         env.getEventBus().register(this);
-      } else if (!options.executionGraphLogPath.isBlank()) {
+      } else if (!options.getExecutionGraphLogPath().isBlank()) {
         env.getBlazeModuleEnvironment()
             .exit(
                 new AbruptExitException(
@@ -252,7 +254,7 @@ public class ExecutionGraphModule extends BlazeModule {
                             .build())));
       }
 
-      includeChangePrunedActions = options.includeChangePrunedActions;
+      includeChangePrunedActions = options.getIncludeChangePrunedActions();
     }
   }
 
@@ -950,19 +952,19 @@ public class ExecutionGraphModule extends BlazeModule {
     ExecutionGraphOptions executionGraphOptions =
         checkNotNull(parsingResult.getOptions(ExecutionGraphOptions.class));
     if (bepOptions.getStreamingLogFileUploads()
-        && executionGraphOptions.executionGraphLogPath.isBlank()) {
+        && executionGraphOptions.getExecutionGraphLogPath().isBlank()) {
       return new StreamingActionDumpWriter(
           env.getRuntime().getBugReporter(),
           env.getEventBus(),
           env.getOptions().getOptions(LocalExecutionOptions.class).getLocalLockfreeOutput(),
-          executionGraphOptions.logFileWriteEdges,
+          executionGraphOptions.getLogFileWriteEdges(),
           newUploader(env, bepOptions).startUpload(LocalFileType.PERFORMANCE_LOG, null),
-          executionGraphOptions.depType,
-          executionGraphOptions.queueSize,
-          executionGraphOptions.queuedBytesLimit);
+          executionGraphOptions.getDepType(),
+          executionGraphOptions.getQueueSize(),
+          executionGraphOptions.getQueuedBytesLimit());
     }
 
-    String path = executionGraphOptions.executionGraphLogPath;
+    String path = executionGraphOptions.getExecutionGraphLogPath();
     if (path.isBlank()) {
       path = ACTION_DUMP_NAME;
     }
@@ -972,11 +974,11 @@ public class ExecutionGraphModule extends BlazeModule {
           env.getRuntime().getBugReporter(),
           env.getEventBus(),
           env.getOptions().getOptions(LocalExecutionOptions.class).getLocalLockfreeOutput(),
-          executionGraphOptions.logFileWriteEdges,
+          executionGraphOptions.getLogFileWriteEdges(),
           actionGraphFile,
-          executionGraphOptions.depType,
-          executionGraphOptions.queueSize,
-          executionGraphOptions.queuedBytesLimit);
+          executionGraphOptions.getDepType(),
+          executionGraphOptions.getQueueSize(),
+          executionGraphOptions.getQueuedBytesLimit());
     } catch (IOException e) {
       throw new ActionDumpFileCreationException(actionGraphFile, e);
     }

@@ -171,7 +171,7 @@ public final class FetchCommand implements BlazeCommand {
       throws InterruptedException {
     EvaluationContext evaluationContext =
         EvaluationContext.newBuilder()
-            .setParallelism(threadsOption.threads)
+            .setParallelism(threadsOption.getThreads())
             .setEventHandler(env.getReporter())
             .build();
 

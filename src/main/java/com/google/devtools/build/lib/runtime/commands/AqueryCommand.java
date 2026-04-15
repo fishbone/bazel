@@ -89,8 +89,8 @@ public final class AqueryCommand implements BlazeCommand {
       RepositoryMapping repoMapping =
           env.getSkyframeExecutor()
               .getMainRepoMapping(
-                  env.getOptions().getOptions(KeepGoingOption.class).keepGoing,
-                  env.getOptions().getOptions(LoadingPhaseThreadsOption.class).threads,
+                  env.getOptions().getOptions(KeepGoingOption.class).getKeepGoing(),
+                  env.getOptions().getOptions(LoadingPhaseThreadsOption.class).getThreads(),
                   env.getReporter());
       mainRepoTargetParser =
           new Parser(env.getRelativeWorkingDirectory(), RepositoryName.MAIN, repoMapping);

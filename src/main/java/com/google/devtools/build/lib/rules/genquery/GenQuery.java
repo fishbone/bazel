@@ -137,7 +137,7 @@ public class GenQuery implements RuleConfiguredTargetFactory {
     QueryOptions queryOptions = optionsParser.getOptions(QueryOptions.class);
     // If you change the list of options here, also change the documentation of genquery.opts in
     // GenQueryRule.java .
-    if (optionsParser.getOptions(KeepGoingOption.class).keepGoing) {
+    if (optionsParser.getOptions(KeepGoingOption.class).getKeepGoing()) {
       ruleContext.attributeError("opts", "option --keep_going is not allowed");
       return null;
     }

@@ -133,7 +133,7 @@ public final class PrintActionCommand implements BlazeCommand {
       this.options = options;
       this.outErr = outErr;
       this.requestedTargets = requestedTargets;
-      keepGoing = options.getOptions(KeepGoingOption.class).keepGoing;
+      keepGoing = options.getOptions(KeepGoingOption.class).getKeepGoing();
       summaryBuilder = ExtraActionSummary.newBuilder();
       actionMnemonicMatcher = new Predicate<ActionAnalysisMetadata>() {
         @Override

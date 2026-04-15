@@ -96,7 +96,7 @@ public final class QuiescingExecutorsImpl implements QuiescingExecutors {
     // possibly allowing bugs here to go unnoticed.
     var loadingPhaseThreadsOption = options.getOptions(LoadingPhaseThreadsOption.class);
     this.analysisParallelism =
-        loadingPhaseThreadsOption != null ? loadingPhaseThreadsOption.threads : 0;
+        loadingPhaseThreadsOption != null ? loadingPhaseThreadsOption.getThreads() : 0;
     var buildRequestOptions = options.getOptions(BuildRequestOptions.class);
     this.executionParallelism = buildRequestOptions != null ? buildRequestOptions.getJobs() : 0;
     this.useAsyncExecution =
