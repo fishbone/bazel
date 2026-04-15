@@ -146,7 +146,7 @@ final class SandboxedWorker extends SingleplexWorker {
     // We put the sandbox inside a unique subdirectory using the worker's ID.
     if (cgroupFactory != null) {
       cgroup = cgroupFactory.create(workerId, ImmutableMap.of());
-    } else if (options.useCgroupsOnLinux || hardenedSandboxOptions != null) {
+    } else if (options.getUseCgroupsOnLinux() || hardenedSandboxOptions != null) {
       // In the event that the memory limit is 0, we defer to using Blaze's WorkerLifecycleManager
       // to kill workers rather than cgroup's OOM killer.
       cgroup =

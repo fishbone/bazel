@@ -304,7 +304,7 @@ public class BuildView {
           skyfocusState.buildConfiguration() != null
               && !skyfocusState.buildConfiguration().equals(topLevelConfig);
       if (buildConfigChanged) {
-        switch (skyfocusState.options().frontierViolationCheck) {
+        switch (skyfocusState.options().getFrontierViolationCheck()) {
           case WARN -> {
             eventHandler.handle(
                 Event.warn(

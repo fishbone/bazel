@@ -104,7 +104,7 @@ public class WorkerModuleTest {
     workerDir.createDirectoryAndParents();
     aLog.createSymbolicLink(PathFragment.EMPTY_FRAGMENT);
     WorkerPool oldPool = module.workerPool;
-    options.workerSandboxing = !options.workerSandboxing;
+    options.setWorkerSandboxing(!options.getWorkerSandboxing());
     module.beforeCommand(env);
     module.buildStarting(buildStartingEvent(request));
     assertThat(storedEventHandler.getEvents()).isEmpty();
@@ -206,7 +206,7 @@ public class WorkerModuleTest {
     assertThat(storedEventHandler.getEvents()).isEmpty();
 
     WorkerPool oldPool = module.workerPool;
-    options.workerMaxMultiplexInstances = Lists.newArrayList(Maps.immutableEntry("foo", 42));
+    options.setWorkerMaxMultiplexInstances(Lists.newArrayList(Maps.immutableEntry("foo", 42)));
     module.beforeCommand(env);
     module.buildStarting(buildStartingEvent(request));
     assertThat(storedEventHandler.getEvents()).hasSize(1);
@@ -229,7 +229,7 @@ public class WorkerModuleTest {
     assertThat(storedEventHandler.getEvents()).isEmpty();
 
     WorkerPool oldPool = module.workerPool;
-    options.workerMaxInstances = Lists.newArrayList(Maps.immutableEntry("bar", 3));
+    options.setWorkerMaxInstances(Lists.newArrayList(Maps.immutableEntry("bar", 3)));
     module.beforeCommand(env);
     module.buildStarting(buildStartingEvent(request));
     assertThat(storedEventHandler.getEvents()).hasSize(1);

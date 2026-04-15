@@ -264,7 +264,7 @@ public final class RemoteAnalysisCacheFactory {
         // Upload or Dump mode: allow overriding the project file matcher with the active
         // directories flag.
         List<String> activeDirectoriesFromFlag =
-            env.getOptions().getOptions(SkyfocusOptions.class).activeDirectories;
+            env.getOptions().getOptions(SkyfocusOptions.class).getActiveDirectories();
         var result = maybeProjectFileMatcher;
         if (!activeDirectoriesFromFlag.isEmpty()) {
           env.getReporter()

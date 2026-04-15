@@ -4530,7 +4530,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
     // Skyfocus.
     memoizingEvaluator.cleanupLatestTopLevelEvaluations();
 
-    if (!skyfocusOptions.skyfocusEnabled) {
+    if (!skyfocusOptions.getSkyfocusEnabled()) {
       skyfocusState = DISABLED;
       return;
     }
@@ -4544,13 +4544,13 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
                 + " dump --skyframe=active_directories' to show the active directories, after this"
                 + " command."));
 
-    if (skyfocusOptions.frontierViolationCheck.equals(FrontierViolationCheck.STRICT)) {
+    if (skyfocusOptions.getFrontierViolationCheck().equals(FrontierViolationCheck.STRICT)) {
       reporter.handle(
           Event.warn("Changes outside of the active directories will cause a build error."));
     }
 
     ImmutableSet<String> newUserDefinedactiveDirectories =
-        ImmutableSet.copyOf(skyfocusOptions.activeDirectories);
+        ImmutableSet.copyOf(skyfocusOptions.getActiveDirectories());
     ImmutableSet<FileStateKey> activeactiveDirectories = skyfocusState.activeDirectories();
 
     if (!activeactiveDirectories.isEmpty()) {
@@ -4591,7 +4591,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
 
     int beforeNodeCount = this.getEvaluator().getValues().size();
     long beforeHeap = 0;
-    if (skyfocusState.options().dumpPostGcStats) {
+    if (skyfocusState.options().getDumpPostGcStats()) {
       // we have to gc once here to get an accurate reading on the exact work Skyfocus is
       // doing.
       System.gc();
@@ -4606,8 +4606,8 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
 
     ImmutableMultiset<SkyFunctionName> skyFunctionCountBefore = ImmutableMultiset.of();
     InMemoryGraph graph = memoizingEvaluator.getInMemoryGraph();
-    SkyfocusDumpOption dumpKeysOption = skyfocusState.options().dumpKeys;
-    if (skyfocusState.options().dumpKeys != SkyfocusDumpOption.NONE) {
+    SkyfocusDumpOption dumpKeysOption = skyfocusState.options().getDumpKeys();
+    if (skyfocusState.options().getDumpKeys() != SkyfocusDumpOption.NONE) {
       skyFunctionCountBefore = getSkyFunctionNameCount(graph);
     }
 
@@ -4653,7 +4653,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
 
     dumpSkyfocusKeys(dumpKeysOption, reporter, focusResult, graph, skyFunctionCountBefore);
 
-    if (skyfocusState.options().dumpKeys != SkyfocusDumpOption.NONE) {
+    if (skyfocusState.options().getDumpKeys() != SkyfocusDumpOption.NONE) {
       reportMetricChange(
           reporter,
           "Rdep edges",
@@ -4678,7 +4678,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
       }
     }
 
-    if (skyfocusState.options().dumpPostGcStats) {
+    if (skyfocusState.options().getDumpPostGcStats()) {
       reportMetricChange(
           reporter,
           "Heap",
