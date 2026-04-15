@@ -41,6 +41,7 @@ import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
 import com.google.devtools.common.options.OptionsBase;
+import com.google.devtools.common.options.OptionsClass;
 import com.google.devtools.common.options.OptionsParser;
 import com.google.devtools.common.options.OptionsParsingResult;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -92,7 +93,8 @@ public final class CommandInterruptionTest {
               .build());
 
   /** Options class to pass configuration to our dummy wait command. */
-  public static class WaitOptions extends OptionsBase {
+  @OptionsClass
+  public abstract static class WaitOptions extends OptionsBase {
     public WaitOptions() {}
 
     @Option(
@@ -100,7 +102,7 @@ public final class CommandInterruptionTest {
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "false")
-    public boolean expectInterruption;
+    public abstract boolean getExpectInterruption();
   }
 
   /**
@@ -125,7 +127,9 @@ public final class CommandInterruptionTest {
     public BlazeCommandResult exec(CommandEnvironment env, OptionsParsingResult options) {
       CommandState commandState =
           new CommandState(
-              env, options.getOptions(WaitOptions.class).expectInterruption, isTestShuttingDown);
+              env,
+              options.getOptions(WaitOptions.class).getExpectInterruption(),
+              isTestShuttingDown);
       commandStateHandoff.getAndSet(null).set(commandState);
       return BlazeCommandResult.detailedExitCode(commandState.waitForDetailedCodeFromTest());
     }

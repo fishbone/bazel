@@ -53,6 +53,7 @@ import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
 import com.google.devtools.common.options.Options;
 import com.google.devtools.common.options.OptionsBase;
+import com.google.devtools.common.options.OptionsClass;
 import com.google.devtools.common.options.OptionsParser;
 import java.util.List;
 import java.util.UUID;
@@ -64,7 +65,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public abstract class ConfigurationTestCase extends FoundationTestCase {
 
-  public static final class TestOptions extends OptionsBase {
+  @OptionsClass
+  public abstract static class TestOptions extends OptionsBase {
     @Option(
         name = "multi_cpu",
         converter = Converters.CommaSeparatedOptionListConverter.class,
@@ -73,7 +75,7 @@ public abstract class ConfigurationTestCase extends FoundationTestCase {
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "null",
         help = "Additional target CPUs.")
-    public List<String> multiCpus;
+    public abstract List<String> getMultiCpus();
   }
 
   protected MockToolsConfig mockToolsConfig;

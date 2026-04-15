@@ -207,10 +207,13 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
             getConfiguration(splitAttr.get("amsterdam"))
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .foo)
+                .getFoo())
         .isEqualTo("stroopwafel");
     assertThat(
-            getConfiguration(splitAttr.get("paris")).getOptions().get(DummyTestOptions.class).foo)
+            getConfiguration(splitAttr.get("paris"))
+                .getOptions()
+                .get(DummyTestOptions.class)
+                .getFoo())
         .isEqualTo("crepe");
   }
 
@@ -268,9 +271,11 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
             getMyInfoFromTarget(getConfiguredTarget("//test/starlark:test"))
                 .getValue("split_attr_dep");
     assertThat(splitAttr.keySet()).containsExactly("0", "1");
-    assertThat(getConfiguration(splitAttr.get("0")).getOptions().get(DummyTestOptions.class).foo)
+    assertThat(
+            getConfiguration(splitAttr.get("0")).getOptions().get(DummyTestOptions.class).getFoo())
         .isEqualTo("stroopwafel");
-    assertThat(getConfiguration(splitAttr.get("1")).getOptions().get(DummyTestOptions.class).foo)
+    assertThat(
+            getConfiguration(splitAttr.get("1")).getOptions().get(DummyTestOptions.class).getFoo())
         .isEqualTo("crepe");
   }
 
@@ -329,7 +334,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
             getConfiguration(splitAttr.get(Starlark.NONE))
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .foo)
+                .getFoo())
         .isEqualTo("stroopwafel");
   }
 
@@ -466,7 +471,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
             getConfiguration(splitAttr.get("amsterdam"))
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .foo)
+                .getFoo())
         .isEqualTo("stroopwafel");
   }
 
@@ -893,7 +898,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
         (List<ConfiguredTarget>) getMyInfoFromTarget(testTarget).getValue("attr_dep");
     assertThat(testDep).hasSize(1);
     ConfiguredTarget mainTarget = Iterables.getOnlyElement(testDep);
-    assertThat(getConfiguration(mainTarget).getOptions().get(DummyTestOptions.class).bazes)
+    assertThat(getConfiguration(mainTarget).getOptions().get(DummyTestOptions.class).getBazes())
         .containsExactly("ok");
   }
 
@@ -3616,7 +3621,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
                 .getConfigurationKey()
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .allowMultipleWithEnvVarsConverter)
+                .getAllowMultipleWithEnvVarsConverter())
         .containsExactly(
             new Converters.EnvVar.Set("a", "1"),
             new Converters.EnvVar.Set("b", "2"),
@@ -3674,13 +3679,13 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
                 .getConfigurationKey()
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .allowMultipleWithEnvVarsConverter)
+                .getAllowMultipleWithEnvVarsConverter())
         .isEqualTo(
             depCt
                 .getConfigurationKey()
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .allowMultipleWithEnvVarsConverter);
+                .getAllowMultipleWithEnvVarsConverter());
     assertNoEvents();
   }
 
@@ -3721,7 +3726,7 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
                 .getConfigurationKey()
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .allowMultipleWithListConverter)
+                .getAllowMultipleWithListConverter())
         .containsExactly("foo", "bar", "baz");
     assertNoEvents();
   }
