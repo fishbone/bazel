@@ -321,25 +321,6 @@ public class AndroidConfiguration extends Fragment implements AndroidConfigurati
                 + "Values > 0 turn the feature on, values > 1 run that many dexbuilder shards.")
     public abstract int getIncrementalDexingShardsAfterProguard();
 
-    // Do not use on the command line.
-    // This flag is intended to be updated as we add supported flags to the incremental dexing tools
-    @Option(
-        name = "non_incremental_per_target_dexopts",
-        converter = Converters.CommaSeparatedOptionListConverter.class,
-        defaultValue = "--positions",
-        documentationCategory = OptionDocumentationCategory.UNDOCUMENTED,
-        effectTags = {
-          OptionEffectTag.LOADING_AND_ANALYSIS,
-          OptionEffectTag.LOSES_INCREMENTAL_STATE,
-        },
-        help =
-            "dx flags that that prevent incremental dexing for binary targets that list any of "
-                + "the flags listed here in their 'dexopts' attribute, which are ignored with "
-                + "incremental dexing (superseding --dexopts_supported_in_incremental_dexing).  "
-                + "Defaults to --positions for safety but can in general be used "
-                + "to make sure the listed dx flags are honored, with additional build latency.  "
-                + "Please notify us if you find yourself needing this flag.")
-    public abstract List<String> getNonIncrementalPerTargetDexopts();
 
     // Do not use on the command line.
     // This flag is intended to be updated as we add supported flags to the incremental dexing tools
@@ -769,7 +750,7 @@ public class AndroidConfiguration extends Fragment implements AndroidConfigurati
   private final boolean incrementalDexing;
   private final int incrementalDexingShardsAfterProguard;
   private final ImmutableList<String> dexoptsSupportedInIncrementalDexing;
-  private final ImmutableList<String> targetDexoptsThatPreventIncrementalDexing;
+
   private final ImmutableList<String> dexoptsSupportedInDexMerger;
   private final ImmutableList<String> dexoptsSupportedInDexSharder;
   private final boolean desugarJava8;
@@ -803,8 +784,6 @@ public class AndroidConfiguration extends Fragment implements AndroidConfigurati
     this.incrementalDexingShardsAfterProguard = options.getIncrementalDexingShardsAfterProguard();
     this.dexoptsSupportedInIncrementalDexing =
         ImmutableList.copyOf(options.getDexoptsSupportedInIncrementalDexing());
-    this.targetDexoptsThatPreventIncrementalDexing =
-        ImmutableList.copyOf(options.getNonIncrementalPerTargetDexopts());
     this.dexoptsSupportedInDexMerger =
         ImmutableList.copyOf(options.getDexoptsSupportedInDexMerger());
     this.dexoptsSupportedInDexSharder =
@@ -880,15 +859,6 @@ public class AndroidConfiguration extends Fragment implements AndroidConfigurati
   @Override
   public ImmutableList<String> getDexoptsSupportedInDexSharder() {
     return dexoptsSupportedInDexSharder;
-  }
-
-  /**
-   * Incremental dexing must not be used for binaries that list any of these flags in their {@code
-   * dexopts} attribute.
-   */
-  @Override
-  public ImmutableList<String> getTargetDexoptsThatPreventIncrementalDexing() {
-    return targetDexoptsThatPreventIncrementalDexing;
   }
 
   @Override

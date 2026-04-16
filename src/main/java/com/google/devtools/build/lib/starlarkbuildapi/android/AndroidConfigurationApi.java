@@ -77,13 +77,6 @@ public interface AndroidConfigurationApi extends StarlarkValue {
       documented = false)
   ImmutableList<String> getDexoptsSupportedInDexSharder();
 
-  @StarlarkMethod(
-      name = "get_target_dexopts_that_prevent_incremental_dexing",
-      structField = true,
-      doc = "",
-      documented = false)
-  ImmutableList<String> getTargetDexoptsThatPreventIncrementalDexing();
-
   @StarlarkMethod(name = "desugar_java8", structField = true, doc = "", documented = false)
   boolean desugarJava8();
 
