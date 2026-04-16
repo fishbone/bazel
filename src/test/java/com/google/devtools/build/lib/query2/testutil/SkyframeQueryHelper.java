@@ -330,10 +330,10 @@ public abstract class SkyframeQueryHelper extends AbstractQueryHelper<Target> {
     packageOptions.setLazyMacroExpansionPackages(lazyMacroExpansionPackages);
 
     BuildLanguageOptions buildLanguageOptions = Options.getDefaults(BuildLanguageOptions.class);
-    buildLanguageOptions.experimentalGoogleLegacyApi = !analysisMock.isThisBazel();
+    buildLanguageOptions.setExperimentalGoogleLegacyApi(!analysisMock.isThisBazel());
     // TODO(b/256127926): Delete once flipped.
-    buildLanguageOptions.experimentalEnableSclDialect = true;
-    buildLanguageOptions.experimentalDormantDeps = true;
+    buildLanguageOptions.setExperimentalEnableSclDialect(true);
+    buildLanguageOptions.setExperimentalDormantDeps(true);
 
     ImmutableList<BuildFileName> buildFilesByPriority = skyframeExecutor.getBuildFilesByPriority();
     PathPackageLocator packageLocator =

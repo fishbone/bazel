@@ -658,7 +658,7 @@ public class CppCompileAction extends AbstractAction implements IncludeScannable
           actionExecutionContext
               .getOptions()
               .getOptions(BuildLanguageOptions.class)
-              .experimentalSiblingRepositoryLayout;
+              .getExperimentalSiblingRepositoryLayout();
       if (!shouldScanIncludes) {
         usedCpp20Modules = computeUsedCpp20Modules(actionExecutionContext);
         // When not actually doing include scanning, add all prunable headers to additionalInputs.
@@ -1541,7 +1541,7 @@ public class CppCompileAction extends AbstractAction implements IncludeScannable
         actionExecutionContext
             .getOptions()
             .getOptions(BuildLanguageOptions.class)
-            .experimentalSiblingRepositoryLayout;
+            .getExperimentalSiblingRepositoryLayout();
 
     if (shouldParseShowIncludes()) {
       NestedSet<Artifact> discoveredInputs =

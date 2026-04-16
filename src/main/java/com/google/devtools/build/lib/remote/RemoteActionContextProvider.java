@@ -137,7 +137,8 @@ final class RemoteActionContextProvider {
     BuildLanguageOptions buildLanguageOptions =
         env.getOptions().getOptions(BuildLanguageOptions.class);
     RemotePathResolver remotePathResolver;
-    if (buildLanguageOptions != null && buildLanguageOptions.experimentalSiblingRepositoryLayout) {
+    if (buildLanguageOptions != null
+        && buildLanguageOptions.getExperimentalSiblingRepositoryLayout()) {
       remotePathResolver = new SiblingRepositoryLayoutResolver(execRoot);
     } else {
       remotePathResolver = new DefaultRemotePathResolver(execRoot);

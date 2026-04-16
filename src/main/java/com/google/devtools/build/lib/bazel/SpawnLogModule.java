@@ -112,7 +112,7 @@ public final class SpawnLogModule extends BlazeModule {
                 env.getWorkspaceName(),
                 env.getOptions()
                     .getOptions(BuildLanguageOptions.class)
-                    .experimentalSiblingRepositoryLayout,
+                    .getExperimentalSiblingRepositoryLayout(),
                 env.getOptions().getOptions(RemoteOptions.class),
                 env.getRuntime().getFileSystem().getDigestFunction(),
                 env.getXattrProvider(),

@@ -278,7 +278,9 @@ public class ExecutionTool {
               env.getEventBus(),
               env.getDirectories().getProductName() + "-",
               skyframeExecutor.getIgnoredPaths(),
-              request.getOptions(BuildLanguageOptions.class).experimentalSiblingRepositoryLayout,
+              request
+                  .getOptions(BuildLanguageOptions.class)
+                  .getExperimentalSiblingRepositoryLayout(),
               runtime.getWorkspace().doesAllowExternalRepositories());
       incrementalPackageRoots.eagerlyPlantSymlinksToSingleSourceRoot();
 
@@ -648,7 +650,9 @@ public class ExecutionTool {
               packageRoots.getPackageRootsMap(),
               getExecRoot(),
               runtime.getProductName(),
-              request.getOptions(BuildLanguageOptions.class).experimentalSiblingRepositoryLayout);
+              request
+                  .getOptions(BuildLanguageOptions.class)
+                  .getExperimentalSiblingRepositoryLayout());
       symlinkForest.plantSymlinkForest();
     } catch (IOException e) {
       String message = String.format("Source forest creation failed: %s", e.getMessage());
