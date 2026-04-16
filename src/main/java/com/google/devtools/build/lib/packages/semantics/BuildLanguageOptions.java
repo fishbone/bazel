@@ -481,18 +481,6 @@ public abstract class BuildLanguageOptions extends OptionsBase {
   public abstract boolean getIncompatibleDoNotSplitLinkingCmdline();
 
   @Option(
-      name = "incompatible_use_cc_configure_from_rules_cc",
-      defaultValue = "false",
-      documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
-      effectTags = {OptionEffectTag.LOADING_AND_ANALYSIS},
-      metadataTags = {OptionMetadataTag.INCOMPATIBLE_CHANGE},
-      help =
-          "When true, Bazel will no longer allow using cc_configure from @bazel_tools. "
-              + "Please see https://github.com/bazelbuild/bazel/issues/10134 for details and "
-              + "migration instructions.")
-  public abstract boolean getIncompatibleUseCcConfigureFromRulesCc();
-
-  @Option(
       name = "incompatible_unambiguous_label_stringification",
       defaultValue = "true",
       documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
@@ -914,9 +902,6 @@ public abstract class BuildLanguageOptions extends OptionsBase {
                 getIncompatibleDoNotSplitLinkingCmdline())
             .set(INCOMPATIBLE_ENFORCE_STARLARK_UTF8, getIncompatibleEnforceStarlarkUtf8())
             .setBool(
-                INCOMPATIBLE_USE_CC_CONFIGURE_FROM_RULES_CC,
-                getIncompatibleUseCcConfigureFromRulesCc())
-            .setBool(
                 INCOMPATIBLE_UNAMBIGUOUS_LABEL_STRINGIFICATION,
                 getIncompatibleUnambiguousLabelStringification())
             .set(MAX_COMPUTATION_STEPS, getMaxComputationSteps())
@@ -1108,8 +1093,6 @@ public abstract class BuildLanguageOptions extends OptionsBase {
   public static final String INCOMPATIBLE_REQUIRE_MNEMONIC_FOR_RUN_ACTIONS =
       "-incompatible_require_mnemonic_for_run_actions";
 
-  public static final String INCOMPATIBLE_USE_CC_CONFIGURE_FROM_RULES_CC =
-      "-incompatible_use_cc_configure_from_rules";
   public static final String INCOMPATIBLE_UNAMBIGUOUS_LABEL_STRINGIFICATION =
       "+incompatible_unambiguous_label_stringification";
   public static final String INCOMPATIBLE_DISABLE_STARLARK_HOST_TRANSITIONS =
