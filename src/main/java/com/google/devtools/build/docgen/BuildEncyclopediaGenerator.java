@@ -63,42 +63,43 @@ public class BuildEncyclopediaGenerator {
     parser.parseAndExitUponError(args);
     BuildEncyclopediaOptions options = parser.getOptions(BuildEncyclopediaOptions.class);
 
-    if (options.help) {
+    if (options.getHelp()) {
       printUsage(parser);
       Runtime.getRuntime().exit(0);
     }
 
-    if (options.linkMapPath.isEmpty()
-        || (options.inputJavaDirs.isEmpty() && options.buildEncyclopediaStardocProtos.isEmpty())
-        || options.provider.isEmpty()
-        || (options.singlePage && options.createToc)) {
+    if (options.getLinkMapPath().isEmpty()
+        || (options.getInputJavaDirs().isEmpty()
+            && options.getBuildEncyclopediaStardocProtos().isEmpty())
+        || options.getProvider().isEmpty()
+        || (options.getSinglePage() && options.getCreateToc())) {
       printUsage(parser);
       Runtime.getRuntime().exit(1);
     }
 
     try {
-      DocLinkMap linkMap = DocLinkMap.createFromFile(options.linkMapPath);
-      RuleLinkExpander linkExpander = new RuleLinkExpander(options.singlePage, linkMap);
-      SourceUrlMapper urlMapper = new SourceUrlMapper(linkMap, options.inputRoot);
+      DocLinkMap linkMap = DocLinkMap.createFromFile(options.getLinkMapPath());
+      RuleLinkExpander linkExpander = new RuleLinkExpander(options.getSinglePage(), linkMap);
+      SourceUrlMapper urlMapper = new SourceUrlMapper(linkMap, options.getInputRoot());
 
       BuildEncyclopediaProcessor processor = null;
-      if (options.singlePage) {
+      if (options.getSinglePage()) {
         processor =
             new SinglePageBuildEncyclopediaProcessor(
-                linkExpander, urlMapper, createRuleClassProvider(options.provider));
+                linkExpander, urlMapper, createRuleClassProvider(options.getProvider()));
       } else {
         processor =
             new MultiPageBuildEncyclopediaProcessor(
                 linkExpander,
                 urlMapper,
-                createRuleClassProvider(options.provider),
-                options.createToc);
+                createRuleClassProvider(options.getProvider()),
+                options.getCreateToc());
       }
       processor.generateDocumentation(
-          options.inputJavaDirs,
-          options.buildEncyclopediaStardocProtos,
-          options.outputDir,
-          options.denylist);
+          options.getInputJavaDirs(),
+          options.getBuildEncyclopediaStardocProtos(),
+          options.getOutputDir(),
+          options.getDenylist());
     } catch (BuildEncyclopediaDocException e) {
       fail(e, false);
     } catch (Throwable e) {

@@ -321,32 +321,33 @@ public class ApiExporter {
     parser.parseAndExitUponError(args);
     BuildEncyclopediaOptions options = parser.getOptions(BuildEncyclopediaOptions.class);
 
-    if (options.help) {
+    if (options.getHelp()) {
       printUsage(parser);
       Runtime.getRuntime().exit(0);
     }
 
-    if (options.linkMapPath.isEmpty()
-        || (options.inputJavaDirs.isEmpty() && options.buildEncyclopediaStardocProtos.isEmpty())
-        || options.provider.isEmpty()
-        || options.outputFile.isEmpty()) {
+    if (options.getLinkMapPath().isEmpty()
+        || (options.getInputJavaDirs().isEmpty()
+            && options.getBuildEncyclopediaStardocProtos().isEmpty())
+        || options.getProvider().isEmpty()
+        || options.getOutputFile().isEmpty()) {
       printUsage(parser);
       Runtime.getRuntime().exit(1);
     }
 
     try {
-      DocLinkMap linkMap = DocLinkMap.createFromFile(options.linkMapPath);
+      DocLinkMap linkMap = DocLinkMap.createFromFile(options.getLinkMapPath());
       RuleLinkExpander ruleExpander = new RuleLinkExpander(true, linkMap);
-      SourceUrlMapper urlMapper = new SourceUrlMapper(linkMap, options.inputRoot);
+      SourceUrlMapper urlMapper = new SourceUrlMapper(linkMap, options.getInputRoot());
       SymbolFamilies symbols =
           new SymbolFamilies(
               new StarlarkDocExpander(ruleExpander),
               urlMapper,
-              options.provider,
-              options.inputJavaDirs,
-              options.buildEncyclopediaStardocProtos,
-              options.denylist,
-              options.apiStardocProtos);
+              options.getProvider(),
+              options.getInputJavaDirs(),
+              options.getBuildEncyclopediaStardocProtos(),
+              options.getDenylist(),
+              options.getApiStardocProtos());
       ImmutableMap<Category, ImmutableList<StarlarkDocPage>> allDocPages = symbols.getAllDocPages();
       Builtins.Builder builtins = Builtins.newBuilder();
 
@@ -374,7 +375,7 @@ public class ApiExporter {
       appendGlobals(
           builtins, symbols.getBzlGlobals(), globalToDoc, typeNameToConstructor, ApiContext.BZL);
       appendNativeRules(builtins, symbols.getNativeRules());
-      writeBuiltins(options.outputFile, builtins);
+      writeBuiltins(options.getOutputFile(), builtins);
 
     } catch (Throwable e) {
       System.err.println("ERROR: " + e.getMessage());

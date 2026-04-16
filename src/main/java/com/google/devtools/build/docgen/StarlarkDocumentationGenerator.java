@@ -49,12 +49,12 @@ built-in functions and data types, providers, configuration fragments, etc.
     parser.parseAndExitUponError(args);
     StarlarkDocumentationOptions options = parser.getOptions(StarlarkDocumentationOptions.class);
 
-    if (options.help) {
+    if (options.getHelp()) {
       printUsage(parser);
       Runtime.getRuntime().exit(0);
     }
 
-    if (parser.getResidue().size() != 1 || options.linkMapPath.isEmpty()) {
+    if (parser.getResidue().size() != 1 || options.getLinkMapPath().isEmpty()) {
       printUsage(parser);
       Runtime.getRuntime().exit(1);
     }
