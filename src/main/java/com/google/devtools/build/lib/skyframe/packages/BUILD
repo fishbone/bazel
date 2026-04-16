@@ -71,6 +71,7 @@ java_library(
         "//src/main/java/com/google/devtools/build/lib/vfs",
         "//src/main/java/com/google/devtools/build/skyframe",
         "//src/main/java/com/google/devtools/build/skyframe:skyframe-objects",
+        "//src/main/java/com/google/devtools/build/skyframe:version",
         "//src/main/java/net/starlark/java/eval",
         "//third_party:caffeine",
         "//third_party:error_prone_annotations",

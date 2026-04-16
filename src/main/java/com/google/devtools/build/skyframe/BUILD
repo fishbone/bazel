@@ -14,7 +14,6 @@ SKYFRAME_OBJECT_SRCS = [
     "FunctionHermeticity.java",
     "GroupedDeps.java",
     "IntVersion.java",
-    "NodeVersion.java",
     "NotComparableSkyValue.java",
     "SkyframeLookupResult.java",
     "SkyFunction.java",
@@ -22,6 +21,10 @@ SKYFRAME_OBJECT_SRCS = [
     "SkyFunctionName.java",
     "SkyKey.java",
     "SkyValue.java",
+]
+
+VERSION_SRCS = [
+    "NodeVersion.java",
     "Version.java",
 ]
 
@@ -30,6 +33,7 @@ java_library(
     srcs = SKYFRAME_OBJECT_SRCS,
     visibility = ["//visibility:public"],
     deps = [
+        ":version",
         "//src/main/java/com/google/devtools/build/lib/bugreport",
         "//src/main/java/com/google/devtools/build/lib/collect/compacthashset",
         "//src/main/java/com/google/devtools/build/lib/concurrent",
@@ -44,6 +48,16 @@ java_library(
 )
 
 java_library(
+    name = "version",
+    srcs = VERSION_SRCS,
+    tags = ["bazel"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//third_party:auto_value",
+    ],
+)
+
+java_library(
     name = "skyframe",
     srcs = glob(
         ["**/*.java"],
@@ -53,6 +67,7 @@ java_library(
         ":cpu_heavy_skykey",
         ":graph_inconsistency_java_proto",
         ":skyframe-objects",
+        ":version",
         "//src/main/java/com/google/devtools/build/lib/bugreport",
         "//src/main/java/com/google/devtools/build/lib/clock",  # keep
         "//src/main/java/com/google/devtools/build/lib/cmdline",
