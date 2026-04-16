@@ -113,7 +113,7 @@ class OnDiskBlobStoreCache extends CombinedCache {
   @Override
   public ListenableFuture<byte[]> downloadBlob(
       RemoteActionExecutionContext context, Digest digest) {
-    if (remoteWorkerOptions.errorOnDuplicateDownloads) {
+    if (remoteWorkerOptions.getErrorOnDuplicateDownloads()) {
       // Only populate numberOfDownloadsPerDigestAndInvocation when fakeErrorForDuplicatedDownloads
       // is enabled to avoid unnecessary unbounded memory growth.
       int numberOfDownloads =

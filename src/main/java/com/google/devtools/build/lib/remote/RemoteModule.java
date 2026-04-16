@@ -196,7 +196,7 @@ public final class RemoteModule extends BlazeModule {
       OptionsParsingResult startupOptions, Iterable<BlazeService> blazeServices) {
     outputBase = startupOptions.getOptions(BlazeServerStartupOptions.class).getOutputBase();
     useRemoteRepoContentsCache =
-        startupOptions.getOptions(RemoteStartupOptions.class).useRemoteRepoContentsCache;
+        startupOptions.getOptions(RemoteStartupOptions.class).getUseRemoteRepoContentsCache();
   }
 
   @Nullable

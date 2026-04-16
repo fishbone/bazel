@@ -46,7 +46,7 @@ final class CapabilitiesServer extends CapabilitiesImplBase {
     DigestFunction.Value df = digestUtil.getDigestFunction();
 
     var builder = ServerCapabilities.newBuilder();
-    if (workerOptions.legacyApi) {
+    if (workerOptions.getLegacyApi()) {
       builder
           .setLowApiVersion(ApiVersion.twoPointZero.toSemVer())
           .setHighApiVersion(ApiVersion.twoPointZero.toSemVer());
