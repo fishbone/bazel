@@ -259,7 +259,7 @@ public class BlazeOptionHandlerTest {
     assertThat(eventHandler.getEvents()).isEmpty();
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("common", "foo", "bar").inOrder();
+    assertThat(options.getTestMultipleString()).containsExactly("common", "foo", "bar").inOrder();
   }
 
   @Test
@@ -485,7 +485,7 @@ public class BlazeOptionHandlerTest {
     assertThat(optionHandler.getRcfileNotes()).isEmpty();
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("explicit");
+    assertThat(options.getTestMultipleString()).containsExactly("explicit");
   }
 
   @Test
@@ -508,7 +508,7 @@ public class BlazeOptionHandlerTest {
                 + "  'build' options: --test_multiple_string=rc_a --test_multiple_string=rc_b");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("rc_a", "rc_b");
+    assertThat(options.getTestMultipleString()).containsExactly("rc_a", "rc_b");
   }
 
   @Test
@@ -536,7 +536,7 @@ public class BlazeOptionHandlerTest {
                 + "  'build' options: --test_multiple_string=rc1_b");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("rc1_a", "rc2", "rc1_b").inOrder();
+    assertThat(options.getTestMultipleString()).containsExactly("rc1_a", "rc2", "rc1_b").inOrder();
   }
 
   @Test
@@ -570,7 +570,7 @@ public class BlazeOptionHandlerTest {
                 + "  'build' options: --test_multiple_string=rc1_b");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly("rc2_common", "rc1_common", "rc1_a", "rc2", "rc1_b")
         .inOrder();
   }
@@ -594,7 +594,7 @@ public class BlazeOptionHandlerTest {
                 + "  'build' options: --test_multiple_string=rc");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("rc", "explicit").inOrder();
+    assertThat(options.getTestMultipleString()).containsExactly("rc", "explicit").inOrder();
   }
 
   @Test
@@ -621,7 +621,7 @@ public class BlazeOptionHandlerTest {
                 + " --test_multiple_string=rc_build_2");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly("rc_common", "rc_build_1", "rc_build_2", "explicit")
         .inOrder();
   }
@@ -658,7 +658,7 @@ public class BlazeOptionHandlerTest {
                 + "  'build' options: --test_multiple_string=rc1_b");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly("rc2_common", "rc1_common", "rc1_a", "rc2", "rc1_b", "explicit")
         .inOrder();
   }
@@ -688,7 +688,9 @@ public class BlazeOptionHandlerTest {
     // "config" is expanded from --config=conf, which occurs last.
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("rc", "explicit", "config").inOrder();
+    assertThat(options.getTestMultipleString())
+        .containsExactly("rc", "explicit", "config")
+        .inOrder();
   }
 
   @Test
@@ -711,7 +713,7 @@ public class BlazeOptionHandlerTest {
 
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("explicit");
+    assertThat(options.getTestMultipleString()).containsExactly("explicit");
   }
 
   @Test
@@ -739,7 +741,9 @@ public class BlazeOptionHandlerTest {
     // "config" is expanded from --config=conf, which occurs before the explicit mention of "rc".
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString).containsExactly("config", "rc", "explicit").inOrder();
+    assertThat(options.getTestMultipleString())
+        .containsExactly("config", "rc", "explicit")
+        .inOrder();
   }
 
   @Test
@@ -774,7 +778,7 @@ public class BlazeOptionHandlerTest {
     // The 2nd config, --config=other, is added by --config=conf after conf adds its own value.
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly("config1", "othercommon", "other", "rc", "explicit")
         .inOrder();
   }
@@ -848,7 +852,7 @@ public class BlazeOptionHandlerTest {
                 + "--test_multiple_string=baz2");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly(
             "rc1",
             "foo1",
@@ -900,7 +904,7 @@ public class BlazeOptionHandlerTest {
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
     // Bar is repeated, since it was included twice.
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly("foo", "bar", "bar", "rc", "explicit")
         .inOrder();
   }
@@ -945,7 +949,7 @@ public class BlazeOptionHandlerTest {
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
     // Bar is repeated, since it was included twice.
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly("foo", "bar", "baz", "foo", "bar", "bar")
         .inOrder();
   }
@@ -1036,7 +1040,7 @@ public class BlazeOptionHandlerTest {
                 + "--test_multiple_string=other");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly(
             "othercommon", "other", "config1", "othercommon", "other", "rc", "explicit")
         .inOrder();
@@ -1109,7 +1113,7 @@ public class BlazeOptionHandlerTest {
                 + "--test_multiple_string=mu");
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly(
             "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa",
             "lambda", "mu")
@@ -1141,7 +1145,7 @@ public class BlazeOptionHandlerTest {
     // Expect the second --config=gamma to have started a second chain, and get warnings about both.
     TestOptions options = parser.getOptions(TestOptions.class);
     assertThat(options).isNotNull();
-    assertThat(options.testMultipleString)
+    assertThat(options.getTestMultipleString())
         .containsExactly(
             "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa",
             "lambda", "mu", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa",
@@ -1238,7 +1242,7 @@ public class BlazeOptionHandlerTest {
                 "option '--config=conf' (source command line options) was expanded and now "
                     + "overrides the explicit option --test_string=explicitValue with "
                     + "--test_string=fromConf"));
-    assertThat(parseResult.testString).isEqualTo("fromConf");
+    assertThat(parseResult.getTestString()).isEqualTo("fromConf");
     assertThat(optionHandler.getRcfileNotes())
         .containsExactly(
             "Found applicable config definition build:conf in file /somewhere/.blazerc: "
@@ -1259,7 +1263,7 @@ public class BlazeOptionHandlerTest {
             ImmutableList.builder());
     TestOptions parseResult = parser.getOptions(TestOptions.class);
     assertThat(eventHandler.getEvents()).isEmpty();
-    assertThat(parseResult.testString).isEqualTo("explicitValue");
+    assertThat(parseResult.getTestString()).isEqualTo("explicitValue");
     assertThat(optionHandler.getRcfileNotes())
         .containsExactly(
             "Found applicable config definition build:conf in file /somewhere/.blazerc: "

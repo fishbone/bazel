@@ -25,30 +25,32 @@ import org.junit.runners.JUnit4;
 public class OptionsMapConversionTest {
 
   /** Dummy options base class. */
-  public static class FooOptions extends OptionsBase {
+  @OptionsClass
+  public abstract static class FooOptions extends OptionsBase {
     @Option(
         name = "foo",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "false")
-    public boolean foo;
+    public abstract boolean getFoo();
   }
 
   /** Dummy options derived class. */
-  public static class BazOptions extends FooOptions {
+  @OptionsClass
+  public abstract static class BazOptions extends FooOptions {
     @Option(
         name = "bar",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "true")
-    public boolean bar;
+    public abstract boolean getBar();
 
     @Option(
         name = "baz",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "5")
-    public int baz;
+    public abstract int getBaz();
   }
 
   @Test
@@ -69,42 +71,43 @@ public class OptionsMapConversionTest {
    *
    * <p>Note that field name order differs from option name order.
    */
-  public static class AlphaOptions extends OptionsBase {
+  @OptionsClass
+  public abstract static class AlphaOptions extends OptionsBase {
 
     @Option(
         name = "c",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "0")
-    public int v;
+    public abstract int getV();
 
     @Option(
         name = "d",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "0")
-    public int w;
+    public abstract int getW();
 
     @Option(
         name = "a",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "0")
-    public int x;
+    public abstract int getX();
 
     @Option(
         name = "e",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "0")
-    public int y;
+    public abstract int getY();
 
     @Option(
         name = "b",
         documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
         effectTags = {OptionEffectTag.NO_OP},
         defaultValue = "0")
-    public int z;
+    public abstract int getZ();
   }
 
   @Test
