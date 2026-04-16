@@ -224,6 +224,7 @@ java_test(
         "//src/main/java/com/google/devtools/build/lib/analysis/config:fragment",
         "//src/main/java/com/google/devtools/build/lib/analysis/config:fragment_options",
         "//src/main/java/com/google/devtools/build/lib/analysis/config:fragment_registry",
+        "//src/main/java/com/google/devtools/common/options:options_internal",
         "//third_party:guava",
         "//third_party:junit4",
         "//third_party:truth",
