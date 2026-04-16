@@ -33,10 +33,10 @@ import com.google.devtools.build.lib.analysis.test.TestShardingStrategy.Sharding
 import com.google.devtools.build.lib.cmdline.Label;
 import com.google.devtools.build.lib.packages.TestSize;
 import com.google.devtools.build.lib.packages.TestTimeout;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.Pair;
 import com.google.devtools.build.lib.util.RegexFilter;
 import com.google.devtools.common.options.BoolOrEnumConverter;
-import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDefinition;
 import com.google.devtools.common.options.OptionDocumentationCategory;
@@ -91,7 +91,7 @@ public class TestConfiguration extends Fragment {
 
     @Option(
         name = "test_env",
-        converter = Converters.EnvVarsConverter.class,
+        converter = EnvVar.Converter.class,
         allowMultiple = true,
         defaultValue = "null",
         documentationCategory = OptionDocumentationCategory.TESTING,
@@ -106,9 +106,9 @@ public class TestConfiguration extends Fragment {
             This option can be used multiple times to specify several variables.
             Used only by the 'bazel test' command.
             """)
-    public abstract List<Converters.EnvVar> getTestEnvironment();
+    public abstract List<EnvVar> getTestEnvironment();
 
-    public abstract void setTestEnvironment(List<Converters.EnvVar> value);
+    public abstract void setTestEnvironment(List<EnvVar> value);
 
     @Option(
         name = "test_timeout",

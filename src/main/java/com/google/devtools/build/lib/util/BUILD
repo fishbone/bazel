@@ -50,6 +50,15 @@ java_library(
 )
 
 java_library(
+    name = "env_var",
+    srcs = ["EnvVar.java"],
+    deps = [
+        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/autocodec",
+        "//src/main/java/com/google/devtools/common/options",
+    ],
+)
+
+java_library(
     name = "file_system_lock",
     srcs = ["FileSystemLock.java"],
     deps = [

@@ -249,6 +249,7 @@ import com.google.devtools.build.lib.skyframe.toolchains.ToolchainResolutionFunc
 import com.google.devtools.build.lib.skyframe.toolchains.UnloadedToolchainContext;
 import com.google.devtools.build.lib.util.AbruptExitException;
 import com.google.devtools.build.lib.util.DetailedExitCode;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.HeapOffsetHelper;
 import com.google.devtools.build.lib.util.Pair;
 import com.google.devtools.build.lib.util.RegexFilter;
@@ -294,7 +295,6 @@ import com.google.devtools.build.skyframe.Version;
 import com.google.devtools.build.skyframe.WalkableGraph;
 import com.google.devtools.build.skyframe.WalkableGraph.WalkableGraphFactory;
 import com.google.devtools.build.skyframe.state.StateMachineEvaluatorForTesting;
-import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.Options;
 import com.google.devtools.common.options.OptionsBase;
 import com.google.devtools.common.options.OptionsParsingResult;
@@ -3063,10 +3063,9 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
     if (opt != null) {
       for (var envVar : opt.getActionEnvironment()) {
         switch (envVar) {
-          case Converters.EnvVar.Set(String name, String value) ->
-              actionEnvironment.put(name, value);
-          case Converters.EnvVar.Inherit(String name) -> actionEnvironment.put(name, null);
-          case Converters.EnvVar.Unset(String name) -> actionEnvironment.remove(name);
+          case EnvVar.Set(String name, String value) -> actionEnvironment.put(name, value);
+          case EnvVar.Inherit(String name) -> actionEnvironment.put(name, null);
+          case EnvVar.Unset(String name) -> actionEnvironment.remove(name);
         }
       }
     }

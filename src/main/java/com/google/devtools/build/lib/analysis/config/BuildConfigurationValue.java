@@ -43,11 +43,11 @@ import com.google.devtools.build.lib.packages.BuiltinRestriction;
 import com.google.devtools.build.lib.skyframe.config.BuildConfigurationKey;
 import com.google.devtools.build.lib.skyframe.serialization.autocodec.AutoCodec;
 import com.google.devtools.build.lib.starlarkbuildapi.BuildConfigurationApi;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.OS;
 import com.google.devtools.build.lib.util.RegexFilter;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.skyframe.SkyValue;
-import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.TriState;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -181,11 +181,11 @@ public class BuildConfigurationValue
     }
     // Order doesn't matter here as ActionEnvironment sorts by key.
     Map<String, String> testEnv = new HashMap<>();
-    for (Converters.EnvVar envVar : buildOptions.get(TestOptions.class).getTestEnvironment()) {
+    for (EnvVar envVar : buildOptions.get(TestOptions.class).getTestEnvironment()) {
       switch (envVar) {
-        case Converters.EnvVar.Set(String name, String value) -> testEnv.put(name, value);
-        case Converters.EnvVar.Inherit(String name) -> testEnv.put(name, null);
-        case Converters.EnvVar.Unset(String name) -> testEnv.remove(name);
+        case EnvVar.Set(String name, String value) -> testEnv.put(name, value);
+        case EnvVar.Inherit(String name) -> testEnv.put(name, null);
+        case EnvVar.Unset(String name) -> testEnv.remove(name);
       }
     }
     return ActionEnvironment.split(testEnv);

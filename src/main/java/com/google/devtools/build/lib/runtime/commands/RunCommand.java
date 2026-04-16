@@ -84,13 +84,13 @@ import com.google.devtools.build.lib.server.FailureDetails.RunCommand.Code;
 import com.google.devtools.build.lib.util.CommandDescriptionForm;
 import com.google.devtools.build.lib.util.CommandFailureUtils;
 import com.google.devtools.build.lib.util.DetailedExitCode;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.ExitCode;
 import com.google.devtools.build.lib.util.InterruptedFailureDetails;
 import com.google.devtools.build.lib.util.OptionsUtils;
 import com.google.devtools.build.lib.vfs.FileSystemUtils;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
-import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
@@ -168,7 +168,7 @@ public class RunCommand implements BlazeCommand {
 
     @Option(
         name = "run_env",
-        converter = Converters.EnvVarsConverter.class,
+        converter = EnvVar.Converter.class,
         allowMultiple = true,
         defaultValue = "null",
         documentationCategory = OptionDocumentationCategory.BAZEL_CLIENT_OPTIONS,
@@ -183,7 +183,7 @@ public class RunCommand implements BlazeCommand {
                 + " wins, options for different variables accumulate. Note that the executed target"
                 + " will generally see the full environment of the host except for those variables"
                 + " that have been explicitly unset.")
-    public abstract List<Converters.EnvVar> getRunEnvironment();
+    public abstract List<EnvVar> getRunEnvironment();
 
     @Option(
         name = "run_in_cwd",
@@ -716,11 +716,11 @@ public class RunCommand implements BlazeCommand {
     // Process --run_env flags first
     for (var envVar : runOptions.getRunEnvironment()) {
       switch (envVar) {
-        case Converters.EnvVar.Set(String name, String value) -> {
+        case EnvVar.Set(String name, String value) -> {
           runEnvironment.put(name, value);
           envVariablesToClear.remove(name);
         }
-        case Converters.EnvVar.Inherit(String name) -> {
+        case EnvVar.Inherit(String name) -> {
           // If a value is missing, inherit from client environment if present, otherwise leave
           // unset. In the latter case, explicitly remove since the same name might be given
           // multiple times.
@@ -731,7 +731,7 @@ public class RunCommand implements BlazeCommand {
           }
           envVariablesToClear.remove(name);
         }
-        case Converters.EnvVar.Unset(String name) -> {
+        case EnvVar.Unset(String name) -> {
           runEnvironment.remove(name);
           envVariablesToClear.add(name);
         }

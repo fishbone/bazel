@@ -18,6 +18,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import com.google.devtools.build.lib.profiler.MemoryProfiler.MemoryProfileStableHeapParameters;
 import com.google.devtools.build.lib.profiler.ProfilerTask;
 import com.google.devtools.build.lib.runtime.CommandLineEvent.ToolCommandLineEvent;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.OptionsUtils;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.common.options.Converter;
@@ -608,7 +609,7 @@ public abstract class CommonCommandOptions extends OptionsBase {
 
   @Option(
       name = "repo_env",
-      converter = Converters.EnvVarsConverter.class,
+      converter = EnvVar.Converter.class,
       allowMultiple = true,
       defaultValue = "null",
       documentationCategory = OptionDocumentationCategory.OUTPUT_PARAMETERS,
@@ -622,7 +623,7 @@ public abstract class CommonCommandOptions extends OptionsBase {
           The string `%bazel_workspace%` in a value will be replaced with the absolute \
           path of the workspace as printed by `bazel info workspace`.
           """)
-  public abstract List<Converters.EnvVar> getRepositoryEnvironment();
+  public abstract List<EnvVar> getRepositoryEnvironment();
 
   @Option(
       name = "incompatible_repo_env_ignores_action_env",

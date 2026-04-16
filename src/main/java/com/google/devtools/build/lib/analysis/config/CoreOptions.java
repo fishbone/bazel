@@ -26,6 +26,7 @@ import com.google.common.collect.Streams;
 import com.google.devtools.build.lib.analysis.config.CoreOptionConverters.LabelListConverter;
 import com.google.devtools.build.lib.analysis.config.CoreOptionConverters.LabelToStringEntryConverter;
 import com.google.devtools.build.lib.cmdline.Label;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.RegexFilter;
 import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.Converters.BooleanConverter;
@@ -451,7 +452,7 @@ public abstract class CoreOptions extends FragmentOptions implements Cloneable {
   // environment to skyframe.
   @Option(
       name = "action_env",
-      converter = Converters.EnvVarsConverter.class,
+      converter = EnvVar.Converter.class,
       allowMultiple = true,
       defaultValue = "null",
       documentationCategory = OptionDocumentationCategory.OUTPUT_PARAMETERS,
@@ -469,13 +470,13 @@ public abstract class CoreOptions extends FragmentOptions implements Cloneable {
           Note that unless `--incompatible_repo_env_ignores_action_env` is true, all `name=value`
           pairs will be available to repository rules.
           """)
-  public abstract List<Converters.EnvVar> getActionEnvironment();
+  public abstract List<EnvVar> getActionEnvironment();
 
-  public abstract void setActionEnvironment(List<Converters.EnvVar> value);
+  public abstract void setActionEnvironment(List<EnvVar> value);
 
   @Option(
       name = "host_action_env",
-      converter = Converters.EnvVarsConverter.class,
+      converter = EnvVar.Converter.class,
       allowMultiple = true,
       defaultValue = "null",
       documentationCategory = OptionDocumentationCategory.OUTPUT_PARAMETERS,
@@ -490,9 +491,9 @@ public abstract class CoreOptions extends FragmentOptions implements Cloneable {
           be used multiple times; for options given for the same variable, the latest
           wins, options for different variables accumulate.
           """)
-  public abstract List<Converters.EnvVar> getHostActionEnvironment();
+  public abstract List<EnvVar> getHostActionEnvironment();
 
-  public abstract void setHostActionEnvironment(List<Converters.EnvVar> value);
+  public abstract void setHostActionEnvironment(List<EnvVar> value);
 
   @Option(
       name = "collect_code_coverage",

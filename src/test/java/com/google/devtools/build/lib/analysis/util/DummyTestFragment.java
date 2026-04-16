@@ -22,10 +22,9 @@ import com.google.devtools.build.lib.analysis.config.FragmentOptions;
 import com.google.devtools.build.lib.analysis.config.RequiresOptions;
 import com.google.devtools.build.lib.cmdline.Label;
 import com.google.devtools.build.lib.skyframe.serialization.autocodec.AutoCodec;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.common.options.Converter;
-import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.Converters.CommaSeparatedOptionListConverter;
-import com.google.devtools.common.options.Converters.EnvVarsConverter;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
@@ -116,14 +115,14 @@ public final class DummyTestFragment extends Fragment {
     public abstract UnreadableStringBox getUnreadableByStarlark();
 
     @Option(
-        name = "allow_multiple_with_env_vars_converter",
+        name = "allow_multiple_with_env_var_converter",
         defaultValue = "null",
         allowMultiple = true,
-        converter = EnvVarsConverter.class,
+        converter = EnvVar.Converter.class,
         documentationCategory = OptionDocumentationCategory.UNDOCUMENTED,
         effectTags = {OptionEffectTag.NO_OP},
-        help = "allowMultiple flag with EnvVarsConverter")
-    public abstract List<Converters.EnvVar> getAllowMultipleWithEnvVarsConverter();
+        help = "allowMultiple flag with EnvVar converter")
+    public abstract List<EnvVar> getAllowMultipleWithEnvVarConverter();
 
     @Option(
         name = "allow_multiple_with_list_converter",

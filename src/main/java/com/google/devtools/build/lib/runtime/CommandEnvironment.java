@@ -61,6 +61,7 @@ import com.google.devtools.build.lib.skyframe.WorkspaceInfoFromDiff;
 import com.google.devtools.build.lib.skyframe.serialization.analysis.RemoteAnalysisCachingEventListener;
 import com.google.devtools.build.lib.util.AbruptExitException;
 import com.google.devtools.build.lib.util.DetailedExitCode;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.OS;
 import com.google.devtools.build.lib.util.io.CommandExtensionReporter;
 import com.google.devtools.build.lib.util.io.OutErr;
@@ -73,7 +74,6 @@ import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.lib.vfs.SyscallCache;
 import com.google.devtools.build.lib.vfs.XattrProvider;
-import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.OptionAndRawValue;
 import com.google.devtools.common.options.OptionsParsingResult;
 import com.google.devtools.common.options.OptionsProvider;
@@ -351,17 +351,17 @@ public class CommandEnvironment {
       // for inheritance.
       for (var envVar : options.getOptions(CoreOptions.class).getActionEnvironment()) {
         switch (envVar) {
-          case Converters.EnvVar.Set(String name, String value) -> {
+          case EnvVar.Set(String name, String value) -> {
             visibleActionEnv.remove(name);
             if (!options.getOptions(CommonCommandOptions.class).getRepoEnvIgnoresActionEnv()) {
               repoEnvBuilder.put(name, value);
               nonstrictRepoEnvBuilder.put(name, value);
             }
           }
-          case Converters.EnvVar.Inherit(String name) -> {
+          case EnvVar.Inherit(String name) -> {
             visibleActionEnv.add(name);
           }
-          case Converters.EnvVar.Unset(String name) -> {
+          case EnvVar.Unset(String name) -> {
             visibleActionEnv.remove(name);
             if (!options.getOptions(CommonCommandOptions.class).getRepoEnvIgnoresActionEnv()) {
               repoEnvBuilder.remove(name);
@@ -372,8 +372,8 @@ public class CommandEnvironment {
       }
     }
     if (command.buildPhase().analyzes() || command.name().equals("info")) {
-      for (Converters.EnvVar envVar : options.getOptions(TestOptions.class).getTestEnvironment()) {
-        if (envVar instanceof Converters.EnvVar.Inherit(String name)) {
+      for (EnvVar envVar : options.getOptions(TestOptions.class).getTestEnvironment()) {
+        if (envVar instanceof EnvVar.Inherit(String name)) {
           visibleTestEnv.add(name);
         }
       }
@@ -389,21 +389,21 @@ public class CommandEnvironment {
     }
     for (var envVar : commandOptions.getRepositoryEnvironment()) {
       switch (envVar) {
-        case Converters.EnvVar.Set(String name, String value) -> {
+        case EnvVar.Set(String name, String value) -> {
           if (bazelWorkspace != null) {
             value = value.replace("%bazel_workspace%", bazelWorkspace);
           }
           repoEnvBuilder.put(name, value);
           nonstrictRepoEnvBuilder.put(name, value);
         }
-        case Converters.EnvVar.Inherit(String name) -> {
+        case EnvVar.Inherit(String name) -> {
           String value = clientEnv.get(name);
           if (value != null) {
             repoEnvBuilder.put(name, value);
             nonstrictRepoEnvBuilder.put(name, value);
           }
         }
-        case Converters.EnvVar.Unset(String name) -> {
+        case EnvVar.Unset(String name) -> {
           repoEnvBuilder.remove(name);
           nonstrictRepoEnvBuilder.remove(name);
         }

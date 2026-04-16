@@ -49,7 +49,7 @@ import com.google.devtools.build.lib.rules.cpp.CppOptions;
 import com.google.devtools.build.lib.skyframe.ConfiguredTargetAndData;
 import com.google.devtools.build.lib.testutil.TestConstants;
 import com.google.devtools.build.lib.testutil.TestRuleClassProvider;
-import com.google.devtools.common.options.Converters;
+import com.google.devtools.build.lib.util.EnvVar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -3589,12 +3589,12 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
         "test/rules.bzl",
         "def _t_impl(settings, attr):",
         "    return {",
-        "        '//command_line_option:allow_multiple_with_env_vars_converter':",
+        "        '//command_line_option:allow_multiple_with_env_var_converter':",
         "        ['a=1', 'b=2', 'c'] }",
         "t = transition(",
         "    implementation = _t_impl,",
         "    inputs = [],",
-        "    outputs =" + " ['//command_line_option:allow_multiple_with_env_vars_converter'],",
+        "    outputs =" + " ['//command_line_option:allow_multiple_with_env_var_converter'],",
         ")",
         "r = rule(",
         "    implementation = lambda ctx: [],",
@@ -3621,11 +3621,9 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
                 .getConfigurationKey()
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .getAllowMultipleWithEnvVarsConverter())
+                .getAllowMultipleWithEnvVarConverter())
         .containsExactly(
-            new Converters.EnvVar.Set("a", "1"),
-            new Converters.EnvVar.Set("b", "2"),
-            new Converters.EnvVar.Inherit("c"));
+            new EnvVar.Set("a", "1"), new EnvVar.Set("b", "2"), new EnvVar.Inherit("c"));
     assertNoEvents();
   }
 
@@ -3639,13 +3637,13 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
         "test/rules.bzl",
         "def _t_impl(settings, attr):",
         "    return {",
-        "        '//command_line_option:allow_multiple_with_env_vars_converter':",
-        "       " + " settings['//command_line_option:allow_multiple_with_env_vars_converter']",
+        "        '//command_line_option:allow_multiple_with_env_var_converter':",
+        "       " + " settings['//command_line_option:allow_multiple_with_env_var_converter']",
         "    }",
         "t = transition(",
         "    implementation = _t_impl,",
-        "    inputs = ['//command_line_option:allow_multiple_with_env_vars_converter'],",
-        "    outputs =" + " ['//command_line_option:allow_multiple_with_env_vars_converter'],",
+        "    inputs = ['//command_line_option:allow_multiple_with_env_var_converter'],",
+        "    outputs =" + " ['//command_line_option:allow_multiple_with_env_var_converter'],",
         ")",
         "r = rule(",
         "    implementation = lambda ctx: [],",
@@ -3667,10 +3665,10 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
         """);
 
     useConfiguration(
-        "--allow_multiple_with_env_vars_converter=a=1",
-        "--allow_multiple_with_env_vars_converter=b=2",
-        "--allow_multiple_with_env_vars_converter=a=2",
-        "--allow_multiple_with_env_vars_converter=c");
+        "--allow_multiple_with_env_var_converter=a=1",
+        "--allow_multiple_with_env_var_converter=b=2",
+        "--allow_multiple_with_env_var_converter=a=2",
+        "--allow_multiple_with_env_var_converter=c");
     ConfiguredTarget parentCt = getConfiguredTarget("//test:c");
     ConfiguredTarget depCt = getDirectPrerequisite(parentCt, "//test:dep");
 
@@ -3679,13 +3677,13 @@ public final class StarlarkAttrTransitionProviderTest extends BuildViewTestCase 
                 .getConfigurationKey()
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .getAllowMultipleWithEnvVarsConverter())
+                .getAllowMultipleWithEnvVarConverter())
         .isEqualTo(
             depCt
                 .getConfigurationKey()
                 .getOptions()
                 .get(DummyTestOptions.class)
-                .getAllowMultipleWithEnvVarsConverter());
+                .getAllowMultipleWithEnvVarConverter());
     assertNoEvents();
   }
 

@@ -50,10 +50,10 @@ import com.google.devtools.build.lib.rules.proto.ProtoConfiguration;
 import com.google.devtools.build.lib.rules.test.TestingSupportRules;
 import com.google.devtools.build.lib.starlarkbuildapi.core.ContextAndFlagGuardedValue;
 import com.google.devtools.build.lib.starlarkbuildapi.core.ContextGuardedValue;
+import com.google.devtools.build.lib.util.EnvVar;
 import com.google.devtools.build.lib.util.OS;
 import com.google.devtools.build.lib.util.ResourceFileLoader;
 import com.google.devtools.build.lib.vfs.PathFragment;
-import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
@@ -190,9 +190,9 @@ public class BazelRuleClassProvider {
         // be replaced by appropriate default rc files anyway.
         for (var envVar : options.get(CoreOptions.class).getActionEnvironment()) {
           switch (envVar) {
-            case Converters.EnvVar.Set(String name, String value) -> env.put(name, value);
-            case Converters.EnvVar.Inherit(String name) -> env.put(name, null);
-            case Converters.EnvVar.Unset(String name) -> env.remove(name);
+            case EnvVar.Set(String name, String value) -> env.put(name, value);
+            case EnvVar.Inherit(String name) -> env.put(name, null);
+            case EnvVar.Unset(String name) -> env.remove(name);
           }
         }
 
