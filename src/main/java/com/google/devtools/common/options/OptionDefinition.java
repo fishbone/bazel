@@ -59,6 +59,12 @@ public abstract class OptionDefinition implements Comparable<OptionDefinition> {
   public static final Comparator<OptionDefinition> BY_CATEGORY =
       comparing(OptionDefinition::getOptionCategory).thenComparing(BY_OPTION_NAME);
 
+  /** Returns all options fields of the given options class, in alphabetic order. */
+  public static ImmutableList<? extends OptionDefinition> getOptionDefinitions(
+      Class<? extends OptionsBase> optionsClass) {
+    return OptionsData.getAllOptionDefinitionsForClass(optionsClass);
+  }
+
   protected final Option optionAnnotation;
   private volatile Converter<?> converter = null;
   private volatile Object defaultValue = null;

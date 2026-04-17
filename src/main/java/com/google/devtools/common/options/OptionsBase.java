@@ -100,7 +100,7 @@ public abstract class OptionsBase {
     if (!getOptionsClass().equals(other.getOptionsClass())) {
       return false;
     }
-    for (OptionDefinition def : OptionsParser.getOptionDefinitions(getOptionsClass())) {
+    for (OptionDefinition def : OptionDefinition.getOptionDefinitions(getOptionsClass())) {
       if (!Objects.equals(getValueFromDefinition(def), other.getValueFromDefinition(def))) {
         return false;
       }

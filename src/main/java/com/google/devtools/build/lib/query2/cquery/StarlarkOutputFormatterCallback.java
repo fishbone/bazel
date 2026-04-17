@@ -31,7 +31,6 @@ import com.google.devtools.build.lib.server.FailureDetails.ConfigurableQuery;
 import com.google.devtools.build.lib.server.FailureDetails.Query;
 import com.google.devtools.build.lib.skyframe.SkyframeExecutor;
 import com.google.devtools.common.options.OptionDefinition;
-import com.google.devtools.common.options.OptionsParser;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class StarlarkOutputFormatterCallback extends CqueryThreadsafeCallback {
       // Add all build options from each native configuration fragment.
       for (FragmentOptions fragmentOptions : buildOptions.getNativeOptions()) {
         Class<? extends FragmentOptions> optionClass = fragmentOptions.getOptionsClass();
-        for (OptionDefinition def : OptionsParser.getOptionDefinitions(optionClass)) {
+        for (OptionDefinition def : OptionDefinition.getOptionDefinitions(optionClass)) {
           String optionName = def.getOptionName();
           String optionKey = COMMAND_LINE_OPTION_PREFIX + optionName;
 

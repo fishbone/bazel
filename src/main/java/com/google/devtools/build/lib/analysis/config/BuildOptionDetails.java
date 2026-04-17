@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.devtools.build.lib.cmdline.Label;
 import com.google.devtools.common.options.OptionDefinition;
 import com.google.devtools.common.options.OptionMetadataTag;
-import com.google.devtools.common.options.OptionsParser;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -60,7 +59,7 @@ public final class BuildOptionDetails {
     ImmutableMap.Builder<String, String> oldNameToCanonicalName = ImmutableMap.builder();
     for (FragmentOptions options : buildOptions) {
       ImmutableList<? extends OptionDefinition> optionDefinitions =
-          OptionsParser.getOptionDefinitions(options.getOptionsClass());
+          OptionDefinition.getOptionDefinitions(options.getOptionsClass());
 
       for (OptionDefinition optionDefinition : optionDefinitions) {
         if (ImmutableList.copyOf(optionDefinition.getOptionMetadataTags())

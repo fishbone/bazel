@@ -27,7 +27,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.build.lib.cmdline.Label;
 import com.google.devtools.build.lib.util.OrderedSetMultimap;
 import com.google.devtools.common.options.OptionDefinition;
-import com.google.devtools.common.options.OptionsParser;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -94,7 +93,7 @@ public final class OptionsDiff {
       if (firstOptions == secondOptions) {
         continue;
       }
-      for (OptionDefinition definition : OptionsParser.getOptionDefinitions(clazz)) {
+      for (OptionDefinition definition : OptionDefinition.getOptionDefinitions(clazz)) {
         Object firstValue = firstOptions.getValueFromDefinition(definition);
         Object secondValue = secondOptions.getValueFromDefinition(definition);
         if (!Objects.equals(firstValue, secondValue)) {

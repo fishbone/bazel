@@ -893,12 +893,6 @@ public class OptionsParser implements OptionsParsingResult {
     return ImmutableMap.copyOf(userOptions);
   }
 
-  /** Returns all options fields of the given options class, in alphabetic order. */
-  public static ImmutableList<? extends OptionDefinition> getOptionDefinitions(
-      Class<? extends OptionsBase> optionsClass) {
-    return OptionsData.getAllOptionDefinitionsForClass(optionsClass);
-  }
-
   /**
    * Returns the option with the given name from the given class.
    *
@@ -911,7 +905,7 @@ public class OptionsParser implements OptionsParsingResult {
    */
   public static OptionDefinition getOptionDefinitionByName(
       Class<? extends OptionsBase> optionsClass, String optionName) {
-    return getOptionDefinitions(optionsClass).stream()
+    return OptionDefinition.getOptionDefinitions(optionsClass).stream()
         .filter(definition -> definition.getOptionName().equals(optionName))
         .collect(MoreCollectors.onlyElement());
   }

@@ -1019,7 +1019,7 @@ public final class BlazeRuntime implements BugReport.BlazeRuntimeInterface {
     List<OptionDefinition> startupOptions = Lists.newArrayList();
     for (Class<? extends OptionsBase> defaultOptions :
         BlazeCommandUtils.getStartupOptions(suppliers)) {
-      startupOptions.addAll(OptionsParser.getOptionDefinitions(defaultOptions));
+      startupOptions.addAll(OptionDefinition.getOptionDefinitions(defaultOptions));
     }
 
     for (OptionDefinition optionDefinition : startupOptions) {
