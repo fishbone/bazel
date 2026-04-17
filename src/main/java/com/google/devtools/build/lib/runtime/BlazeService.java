@@ -16,7 +16,7 @@ package com.google.devtools.build.lib.runtime;
 import com.google.common.collect.ImmutableList;
 import com.google.devtools.build.lib.util.AbruptExitException;
 import com.google.devtools.common.options.OptionsBase;
-import com.google.devtools.common.options.OptionsParsingResult;
+import com.google.devtools.common.options.OptionsProvider;
 
 /**
  * Provides a piece of functionality in the Service Component (SC).
@@ -54,6 +54,6 @@ public interface BlazeService extends OptionsSupplier {
    * @param blazeServices the available services, including this service itself
    * @throws AbruptExitException to shut down the server immediately
    */
-  default void globalInit(OptionsParsingResult startupOptions, Iterable<BlazeService> blazeServices)
+  default void globalInit(OptionsProvider startupOptions, Iterable<BlazeService> blazeServices)
       throws AbruptExitException {}
 }

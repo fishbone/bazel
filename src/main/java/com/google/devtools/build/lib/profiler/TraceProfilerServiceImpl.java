@@ -31,7 +31,7 @@ import com.google.devtools.build.lib.concurrent.ThreadSafety.ThreadSafe;
 import com.google.devtools.build.lib.profiler.PredicateBasedStatRecorder.RecorderAndPredicate;
 import com.google.devtools.build.lib.profiler.TaskData.ActionTaskData;
 import com.google.devtools.build.lib.runtime.BlazeService;
-import com.google.devtools.common.options.OptionsParsingResult;
+import com.google.devtools.common.options.OptionsProvider;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.sun.management.OperatingSystemMXBean;
 import java.io.IOException;
@@ -195,8 +195,7 @@ public final class TraceProfilerServiceImpl implements TraceProfilerService {
   }
 
   @Override
-  public void globalInit(
-      OptionsParsingResult startupOptions, Iterable<BlazeService> blazeServices) {
+  public void globalInit(OptionsProvider startupOptions, Iterable<BlazeService> blazeServices) {
     // This is to ensure that the profiler is available as early as possible during the server
     // startup.
     Profiler.setTraceProfilerService(this);
