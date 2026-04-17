@@ -33,12 +33,21 @@ java_library(
     ],
 )
 
+java_library(
+    name = "auto_profiler",
+    srcs = ["AutoProfiler.java"],
+    deps = [
+        ":profiler",
+        "//src/main/java/com/google/devtools/build/lib/clock",
+        "//third_party:guava",
+    ],
+)
+
 # Profiler interface and helper classes. Available in both the SC and the LC.
 java_library(
     name = "profiler",
     srcs = [
         "AsyncProfiler.java",
-        "AutoProfiler.java",
         "CounterSeriesCollector.java",
         "CounterSeriesTask.java",
         "MemoryProfiler.java",
@@ -144,6 +153,7 @@ java_library(
     name = "google-auto-profiler-utils",
     srcs = ["GoogleAutoProfilerUtils.java"],
     deps = [
+        ":auto_profiler",
         ":profiler",
         "//third_party:flogger",
         "//third_party:guava",
