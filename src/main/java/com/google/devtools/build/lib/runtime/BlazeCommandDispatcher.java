@@ -73,6 +73,7 @@ import com.google.devtools.build.lib.util.io.DelegatingOutErr;
 import com.google.devtools.build.lib.util.io.OutErr;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
+import com.google.devtools.common.options.ConstructionException;
 import com.google.devtools.common.options.OpaqueOptionsData;
 import com.google.devtools.common.options.OptionAndRawValue;
 import com.google.devtools.common.options.OptionPriority.PriorityCategory;
@@ -932,8 +933,7 @@ public class BlazeCommandDispatcher implements CommandDispatcher {
    * <p>An overriding method should first call this method and can then override default values
    * directly or by calling {@link BlazeOptionHandler#parseOptions} for command-specific options.
    */
-  private OptionsParser createOptionsParser(BlazeCommand command)
-      throws OptionsParser.ConstructionException {
+  private OptionsParser createOptionsParser(BlazeCommand command) throws ConstructionException {
     OpaqueOptionsData optionsData;
     optionsData = optionsDataCache.get(command);
     Command annotation = command.getClass().getAnnotation(Command.class);

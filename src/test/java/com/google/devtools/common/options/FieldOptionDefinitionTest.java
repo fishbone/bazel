@@ -23,7 +23,6 @@ import com.google.devtools.common.options.Converters.AssignmentConverter;
 import com.google.devtools.common.options.Converters.IntegerConverter;
 import com.google.devtools.common.options.Converters.StringConverter;
 import com.google.devtools.common.options.OptionDefinition.NotAnOptionException;
-import com.google.devtools.common.options.OptionsParser.ConstructionException;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;

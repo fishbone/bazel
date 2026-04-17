@@ -19,7 +19,6 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Correspondence;
-import com.google.devtools.common.options.OptionsParser.ConstructionException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +31,14 @@ import org.junit.runners.JUnit4;
 public class OptionsDataTest {
 
   private static IsolatedOptionsData construct(Class<? extends OptionsBase> optionsClass)
-      throws OptionsParser.ConstructionException {
+      throws ConstructionException {
     return IsolatedOptionsData.from(
         ImmutableList.of(optionsClass), /* allowDuplicatesParsingEquivalently= */ false);
   }
 
   private static IsolatedOptionsData construct(
-      Class<? extends OptionsBase> optionsClass1,
-      Class<? extends OptionsBase> optionsClass2)
-      throws OptionsParser.ConstructionException {
+      Class<? extends OptionsBase> optionsClass1, Class<? extends OptionsBase> optionsClass2)
+      throws ConstructionException {
     return IsolatedOptionsData.from(
         ImmutableList.of(optionsClass1, optionsClass2),
         /* allowDuplicatesParsingEquivalently= */ false);
@@ -50,7 +48,7 @@ public class OptionsDataTest {
       Class<? extends OptionsBase> optionsClass1,
       Class<? extends OptionsBase> optionsClass2,
       Class<? extends OptionsBase> optionsClass3)
-      throws OptionsParser.ConstructionException {
+      throws ConstructionException {
     return IsolatedOptionsData.from(
         ImmutableList.of(optionsClass1, optionsClass2, optionsClass3),
         /* allowDuplicatesParsingEquivalently= */ false);

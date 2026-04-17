@@ -14,7 +14,6 @@
 
 package com.google.devtools.common.options;
 
-import com.google.devtools.common.options.OptionsParser.ConstructionException;
 import java.util.Arrays;
 import java.util.List;
 

@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.devtools.common.options.Converters.CommaSeparatedOptionListConverter;
 import com.google.devtools.common.options.OptionPriority.PriorityCategory;
 import com.google.devtools.common.options.OptionsParser.ArgAndFallbackData;
-import com.google.devtools.common.options.OptionsParser.ConstructionException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,9 +60,9 @@ public final class OptionsParserTest {
 
   @Test
   public void errorsDuringConstructionAreWrapped() {
-    OptionsParser.ConstructionException e =
+    ConstructionException e =
         assertThrows(
-            OptionsParser.ConstructionException.class,
+            ConstructionException.class,
             () -> OptionsParser.builder().optionsClasses(BadOptions.class).build());
     assertThat(e).hasCauseThat().isInstanceOf(DuplicateOptionDeclarationException.class);
   }

@@ -16,7 +16,6 @@ package com.google.devtools.common.options;
 import static java.util.Comparator.comparing;
 
 import com.google.common.collect.ImmutableList;
-import com.google.devtools.common.options.OptionsParser.ConstructionException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;

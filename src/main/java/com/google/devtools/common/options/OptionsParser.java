@@ -74,30 +74,6 @@ import javax.annotation.Nullable;
  */
 public class OptionsParser implements OptionsParsingResult {
 
-  // TODO(b/65049598) make ConstructionException checked.
-  /**
-   * An unchecked exception thrown when there is a problem constructing a parser, e.g. an error
-   * while validating an {@link OptionDefinition} in one of its {@link OptionsBase} subclasses.
-   *
-   * <p>This exception is unchecked because it generally indicates an internal error affecting all
-   * invocations of the program. I.e., any such error should be immediately obvious to the
-   * developer. Although unchecked, we explicitly mark some methods as throwing it as a reminder in
-   * the API.
-   */
-  public static class ConstructionException extends RuntimeException {
-    public ConstructionException(String message) {
-      super(message);
-    }
-
-    public ConstructionException(Throwable cause) {
-      super(cause);
-    }
-
-    public ConstructionException(String message, Throwable cause) {
-      super(message, cause);
-    }
-  }
-
   /**
    * A cache for the parsed options data. Both keys and values are immutable, so this is always
    * safe. Only access this field through the {@link #getOptionsData} method for thread-safety! The
