@@ -69,6 +69,7 @@ import com.google.devtools.build.lib.exec.ExecutionOptions;
 import com.google.devtools.build.lib.packages.Target;
 import com.google.devtools.build.lib.pkgcache.LoadingFailedException;
 import com.google.devtools.build.lib.pkgcache.LoadingOptions;
+import com.google.devtools.build.lib.profiler.MemoryProfiler;
 import com.google.devtools.build.lib.profiler.ProfilePhase;
 import com.google.devtools.build.lib.profiler.Profiler;
 import com.google.devtools.build.lib.profiler.SilentCloseable;
@@ -258,6 +259,7 @@ public class BuildTool {
       initializeOutputFilter(request);
 
       TargetPatternPhaseValue targetPatternPhaseValue;
+      MemoryProfiler.instance().markPhase(ProfilePhase.TARGET_PATTERN_EVAL);
       Profiler.instance().markPhase(ProfilePhase.TARGET_PATTERN_EVAL);
       try (SilentCloseable c = Profiler.instance().profile("evaluateTargetPatterns")) {
         targetPatternPhaseValue =
@@ -1205,6 +1207,7 @@ public class BuildTool {
     // that the build completed normally. BlazeCommandDispatcher will call handleCrash.
     if (crash == null) {
       try {
+        MemoryProfiler.instance().markPhase(ProfilePhase.FINISH);
         Profiler.instance().markPhase(ProfilePhase.FINISH);
       } catch (InterruptedException e) {
         env.getReporter().handle(Event.error("Build interrupted during command completion"));

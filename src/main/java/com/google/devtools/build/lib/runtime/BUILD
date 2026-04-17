@@ -119,6 +119,7 @@ java_library(
     deps = [
         ":command_line_event",
         "//src/main/java/com/google/devtools/build/lib/profiler",
+        "//src/main/java/com/google/devtools/build/lib/profiler:memory_profiler",
         "//src/main/java/com/google/devtools/build/lib/util",
         "//src/main/java/com/google/devtools/build/lib/util:env_var",
         "//src/main/java/com/google/devtools/build/lib/vfs:pathfragment",
@@ -1072,6 +1073,7 @@ java_library(
         "//src/main/java/com/google/devtools/build/lib/profiler:auto_profiler",
         "//src/main/java/com/google/devtools/build/lib/profiler:collect_local_resource_usage",
         "//src/main/java/com/google/devtools/build/lib/profiler:google-auto-profiler-utils",
+        "//src/main/java/com/google/devtools/build/lib/profiler:memory_profiler",
         "//src/main/java/com/google/devtools/build/lib/profiler:system_network_stats_service",
         "//src/main/java/com/google/devtools/build/lib/profiler/memory:allocationtracker",
         "//src/main/java/com/google/devtools/build/lib/query2",

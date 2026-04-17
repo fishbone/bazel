@@ -43,6 +43,20 @@ java_library(
     ],
 )
 
+java_library(
+    name = "memory_profiler",
+    srcs = ["MemoryProfiler.java"],
+    deps = [
+        ":profiler",
+        "//src/main/java/com/google/devtools/build/lib/bugreport",
+        "//src/main/java/com/google/devtools/build/lib/util:heap_offset_helper",
+        "//src/main/java/com/google/devtools/build/lib/util:pair",
+        "//src/main/java/com/google/devtools/common/options",
+        "//third_party:guava",
+        "//third_party:jsr305",
+    ],
+)
+
 # Profiler interface and helper classes. Available in both the SC and the LC.
 java_library(
     name = "profiler",
@@ -50,7 +64,6 @@ java_library(
         "AsyncProfiler.java",
         "CounterSeriesCollector.java",
         "CounterSeriesTask.java",
-        "MemoryProfiler.java",
         "ProfilePhase.java",
         "Profiler.java",
         "ProfilerTask.java",
@@ -61,13 +74,9 @@ java_library(
         "TraceProfilerService.java",
     ],
     deps = [
-        "//src/main/java/com/google/devtools/build/lib/bugreport",
         "//src/main/java/com/google/devtools/build/lib/clock",
         "//src/main/java/com/google/devtools/build/lib/runtime:blaze_service",
         "//src/main/java/com/google/devtools/build/lib/util:TestType",
-        "//src/main/java/com/google/devtools/build/lib/util:heap_offset_helper",
-        "//src/main/java/com/google/devtools/build/lib/util:pair",
-        "//src/main/java/com/google/devtools/common/options",
         "//third_party:error_prone_annotations",
         "//third_party:guava",
         "//third_party:jsr305",
