@@ -864,42 +864,6 @@ class OptionsParserImpl {
             .iterator();
   }
 
-  /**
-   * Two option definitions are considered equivalent for parsing if they result in the same control
-   * flow through {@link #identifyOptionAndPossibleArgument}. This is crucial to ensure that the
-   * beginning of the next option can be determined unambiguously when parsing with fallback data.
-   *
-   * <p>Examples:
-   *
-   * <ul>
-   *   <li>Both {@code query} and {@code cquery} have a {@code --output} option, but the options
-   *       accept different sets of values (e.g. {@code cquery} has {@code --output=files}, but
-   *       {@code query} doesn't. However, since both options accept a string value, they parse
-   *       equivalently as far as {@link #identifyOptionAndPossibleArgument} is concerned -
-   *       potential failures due to unsupported values occur after parsing, during value
-   *       conversion. There is no ambiguity in how many command-line arguments are consumed
-   *       depending on which option definition is used.
-   *   <li>If the hypothetical {@code foo} command also had a {@code --output} option, but it were
-   *       boolean-valued, then the two option definitions would <b>not</b> be equivalent for
-   *       parsing: The command line {@code --output --copt=foo} would parse as {@code {"output":
-   *       "--copt=foo"}} for the {@code cquery} command, but as {@code {"output": true, "copt":
-   *       "foo"}} for the {@code foo} command, thus resulting in parsing ambiguities between the
-   *       two commands.
-   * </ul>
-   */
-  public static boolean equivalentForParsing(
-      OptionDefinition definition, OptionDefinition otherDefinition) {
-    if (definition.equals(otherDefinition)) {
-      return true;
-    }
-    return (definition.usesBooleanValueSyntax() == otherDefinition.usesBooleanValueSyntax())
-        && (definition.getType().equals(Void.class) == otherDefinition.getType().equals(Void.class))
-        && (ImmutableList.copyOf(definition.getOptionMetadataTags())
-                .contains(OptionMetadataTag.INTERNAL)
-            == ImmutableList.copyOf(otherDefinition.getOptionMetadataTags())
-                .contains(OptionMetadataTag.INTERNAL));
-  }
-
   // TODO: Replace with a sealed interface unwrapped via pattern matching when available.
   private static final class ParsedOptionDescriptionOrIgnoredArgs {
 

@@ -212,7 +212,7 @@ public class IsolatedOptionsData extends OpaqueOptionsData {
     if (aFieldMap.containsKey(optionName)) {
       OptionDefinition otherDefinition = aFieldMap.get(optionName);
       if (allowDuplicatesParsingEquivalently
-          && OptionsParserImpl.equivalentForParsing(otherDefinition, definition)) {
+          && OptionDefinition.equivalentForParsing(otherDefinition, definition)) {
         return;
       }
       throw new DuplicateOptionDeclarationException(
