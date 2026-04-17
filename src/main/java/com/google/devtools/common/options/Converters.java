@@ -600,9 +600,10 @@ public final class Converters {
     }
   }
 
-  public static class HelpVerbosityConverter extends EnumConverter<OptionsParser.HelpVerbosity> {
+  /** A {@link Converter} for {@link HelpVerbosity}. */
+  public static class HelpVerbosityConverter extends EnumConverter<HelpVerbosity> {
     public HelpVerbosityConverter() {
-      super(OptionsParser.HelpVerbosity.class, "--help_verbosity setting");
+      super(HelpVerbosity.class, "--help_verbosity setting");
     }
   }
 

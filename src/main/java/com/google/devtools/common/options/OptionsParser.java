@@ -401,16 +401,6 @@ public class OptionsParser implements OptionsParsingResult {
   }
 
   /**
-   * The verbosity with which option help messages are displayed: short (just the name), medium
-   * (name, type, default, abbreviation), and long (full description).
-   */
-  public enum HelpVerbosity {
-    LONG,
-    MEDIUM,
-    SHORT
-  }
-
-  /**
    * Returns a description of all the options this parser can digest. In addition to {@link Option}
    * annotations, this method also interprets {@link OptionsUsage} annotations which give an
    * intuitive short description for the options. Options of the same category (see {@link

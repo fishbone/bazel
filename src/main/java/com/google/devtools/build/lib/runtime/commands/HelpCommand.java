@@ -51,6 +51,7 @@ import com.google.devtools.build.lib.util.io.OutErr;
 import com.google.devtools.common.options.Converter;
 import com.google.devtools.common.options.Converters;
 import com.google.devtools.common.options.EnumConverter;
+import com.google.devtools.common.options.HelpVerbosity;
 import com.google.devtools.common.options.HtmlUtils;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDefinition;
@@ -61,7 +62,6 @@ import com.google.devtools.common.options.OptionMetadataTag;
 import com.google.devtools.common.options.OptionsBase;
 import com.google.devtools.common.options.OptionsClass;
 import com.google.devtools.common.options.OptionsParser;
-import com.google.devtools.common.options.OptionsParser.HelpVerbosity;
 import com.google.devtools.common.options.OptionsParsingResult;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
@@ -109,7 +109,7 @@ public final class HelpCommand implements BlazeCommand {
         documentationCategory = OptionDocumentationCategory.LOGGING,
         effectTags = {OptionEffectTag.TERMINAL_OUTPUT},
         help = "Select the verbosity of the help command.")
-    public abstract OptionsParser.HelpVerbosity getHelpVerbosity();
+    public abstract HelpVerbosity getHelpVerbosity();
 
     @Option(
         name = "long",
@@ -420,7 +420,7 @@ public final class HelpCommand implements BlazeCommand {
             "resource:target-syntax.txt",
             getClass(),
             ImmutableList.of(),
-            OptionsParser.HelpVerbosity.MEDIUM,
+            HelpVerbosity.MEDIUM,
             productName));
   }
 

@@ -62,12 +62,12 @@ import com.google.devtools.build.skyframe.QueryableGraph.Reason;
 import com.google.devtools.build.skyframe.SkyKey;
 import com.google.devtools.common.options.Converter;
 import com.google.devtools.common.options.EnumConverter;
+import com.google.devtools.common.options.HelpVerbosity;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
 import com.google.devtools.common.options.OptionsBase;
 import com.google.devtools.common.options.OptionsClass;
-import com.google.devtools.common.options.OptionsParser;
 import com.google.devtools.common.options.OptionsParsingException;
 import com.google.devtools.common.options.OptionsParsingResult;
 import java.io.BufferedOutputStream;
@@ -353,7 +353,7 @@ public class DumpCommand implements BlazeCommand {
                   getClass().getAnnotation(Command.class).help(),
                   getClass(),
                   optionList,
-                  OptionsParser.HelpVerbosity.LONG,
+                  HelpVerbosity.LONG,
                   runtime.getProductName()));
       return createFailureResult("no output specified", Code.NO_OUTPUT_SPECIFIED);
     }

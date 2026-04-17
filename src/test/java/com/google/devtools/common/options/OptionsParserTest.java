@@ -756,8 +756,7 @@ public final class OptionsParserTest {
   public void describeOptionsWithInheritance() throws Exception {
     OptionsParser parser = OptionsParser.builder().optionsClasses(DerivedClass.class).build();
     String usage =
-        parser.describeOptionsWithDeprecatedCategories(
-            ImmutableMap.of(), OptionsParser.HelpVerbosity.LONG);
+        parser.describeOptionsWithDeprecatedCategories(ImmutableMap.of(), HelpVerbosity.LONG);
     assertThat(usage).contains("--base");
     assertThat(usage).contains("--derived");
 
@@ -983,8 +982,7 @@ public final class OptionsParserTest {
   public void describeOptionsWithExpansion() throws Exception {
     OptionsParser parser = OptionsParser.builder().optionsClasses(ExpansionOptions.class).build();
     String usage =
-        parser.describeOptionsWithDeprecatedCategories(
-            ImmutableMap.of(), OptionsParser.HelpVerbosity.LONG);
+        parser.describeOptionsWithDeprecatedCategories(ImmutableMap.of(), HelpVerbosity.LONG);
     assertThat(usage).contains("  --expands\n      Expands to: --underlying=from_expansion");
   }
 

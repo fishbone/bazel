@@ -14,6 +14,7 @@
 package com.google.devtools.build.docgen;
 
 import com.google.devtools.build.lib.analysis.ConfiguredRuleClassProvider;
+import com.google.devtools.common.options.HelpVerbosity;
 import com.google.devtools.common.options.OptionsParser;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,7 +36,7 @@ public class BuildEncyclopediaGenerator {
             + "Single page (-1) and table-of-contents creation (-t) are mutually exclusive.\n");
     System.err.println(
         parser.describeOptionsWithDeprecatedCategories(
-            Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
+            Collections.<String, String>emptyMap(), HelpVerbosity.LONG));
   }
 
   private static void fail(Throwable e, boolean printStackTrace) {

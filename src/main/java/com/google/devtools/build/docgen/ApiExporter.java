@@ -26,6 +26,7 @@ import com.google.devtools.build.docgen.starlark.MemberDoc;
 import com.google.devtools.build.docgen.starlark.ParamDoc;
 import com.google.devtools.build.docgen.starlark.StarlarkDocExpander;
 import com.google.devtools.build.docgen.starlark.StarlarkDocPage;
+import com.google.devtools.common.options.HelpVerbosity;
 import com.google.devtools.common.options.OptionsParser;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -312,7 +313,7 @@ public class ApiExporter {
             + " one input_dir (-i) or binproto (--be_stardoc_proto) must be specified.\n");
     System.err.println(
         parser.describeOptionsWithDeprecatedCategories(
-            Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
+            Collections.<String, String>emptyMap(), HelpVerbosity.LONG));
   }
 
   public static void main(String[] args) {
