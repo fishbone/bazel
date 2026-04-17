@@ -128,7 +128,6 @@ public class RemoteAnalysisCacheManager implements RemoteAnalysisCachingDependen
         Event event =
             switch (result.status()) {
               case MATCH_STATUS_MATCH -> Event.info("Skycache: " + result.statusMessage());
-              case MATCH_STATUS_FAILURE -> Event.warn("Skycache: " + result.statusMessage());
               default -> {
                 bailedOut = true;
                 yield Event.warn("Skycache: " + result.statusMessage());
