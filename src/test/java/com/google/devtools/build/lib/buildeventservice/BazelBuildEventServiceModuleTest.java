@@ -738,9 +738,10 @@ public final class BazelBuildEventServiceModuleTest extends BuildIntegrationTest
   @Test
   public void testKeywords() throws Exception {
     runBuildWithOptions();
-    BuildEventServiceOptions besOptions = new BuildEventServiceOptions();
-    besOptions.besKeywords = ImmutableList.of("keyword0", "keyword1", "keyword0");
-    besOptions.besSystemKeywords = ImmutableList.of("sys_keyword0", "sys_keyword1", "sys_keyword0");
+    BuildEventServiceOptions besOptions = Options.getDefaults(BuildEventServiceOptions.class);
+    besOptions.setBesKeywords(ImmutableList.of("keyword0", "keyword1", "keyword0"));
+    besOptions.setBesSystemKeywords(
+        ImmutableList.of("sys_keyword0", "sys_keyword1", "sys_keyword0"));
 
     assertThat(besModule.getBesKeywords("build", besOptions, null))
         .containsExactly(
@@ -755,16 +756,16 @@ public final class BazelBuildEventServiceModuleTest extends BuildIntegrationTest
   @Test
   public void testMakeGrpcMetadata() throws Exception {
     runBuildWithOptions();
-    BuildEventServiceOptions besOptions = new BuildEventServiceOptions();
+    BuildEventServiceOptions besOptions = Options.getDefaults(BuildEventServiceOptions.class);
     AuthAndTLSOptions authAndTLSOptions = Options.getDefaults(AuthAndTLSOptions.class);
-    besOptions.besBackend = "bes-backend";
-    besOptions.besProxy = "bes-proxy";
-    besOptions.besHeaders =
+    besOptions.setBesBackend("bes-backend");
+    besOptions.setBesProxy("bes-proxy");
+    besOptions.setBesHeaders(
         ImmutableList.of(
             Map.entry("key1", "val1"),
             Map.entry("key2", "val2"),
             Map.entry("key3", "val3"),
-            Map.entry("key1", "val4"));
+            Map.entry("key1", "val4")));
     BackendConfig newConfig = BackendConfig.create(besOptions, authAndTLSOptions);
 
     Metadata metadata = BazelBuildEventServiceModule.makeGrpcMetadata(newConfig);

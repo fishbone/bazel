@@ -443,8 +443,8 @@ public abstract class BuildEventServiceModule<OptionsT extends BuildEventService
   }
 
   private void registerOutAndErrOutputStreams() {
-    int bufferSize = besOptions.besOuterrBufferSize;
-    int chunkSize = besOptions.besOuterrChunkSize;
+    int bufferSize = besOptions.getBesOuterrBufferSize();
+    int chunkSize = besOptions.getBesOuterrChunkSize();
     SynchronizedOutputStream out =
         new SynchronizedOutputStream(bufferSize, chunkSize, /* isStderr= */ false);
     SynchronizedOutputStream err =
@@ -484,7 +484,7 @@ public abstract class BuildEventServiceModule<OptionsT extends BuildEventService
         // GC thrashing during severe OOMs may prevent future completion, so don't wait forever.
         // We do want to wait in case this is a "benign" OOM - a brief high-water-mark - because
         // then we can preserve that information in the BEP being uploaded to BES.
-        besClosedFuture.get(besOptions.besOomFinishUploadTimeout.toMillis(), MILLISECONDS);
+        besClosedFuture.get(besOptions.getBesOomFinishUploadTimeout().toMillis(), MILLISECONDS);
       } else {
         Uninterruptibles.getUninterruptibly(besClosedFuture);
       }
@@ -671,7 +671,7 @@ public abstract class BuildEventServiceModule<OptionsT extends BuildEventService
 
       closeBepTransports();
 
-      if (!Strings.isNullOrEmpty(besOptions.besBackend)) {
+      if (!Strings.isNullOrEmpty(besOptions.getBesBackend())) {
         constructAndMaybeReportInvocationIdUrl();
       } else if (!bepTransports.isEmpty()) {
         reporter.handle(Event.info("Build Event Protocol files produced successfully."));
@@ -730,7 +730,7 @@ public abstract class BuildEventServiceModule<OptionsT extends BuildEventService
     logger.atInfo().log(
         "Streaming Build Event Protocol to '%s' with build_request_id: '%s'"
             + " and invocation_id: '%s'",
-        besOptions.besBackend, buildRequestId, invocationId);
+        besOptions.getBesBackend(), buildRequestId, invocationId);
   }
 
   @Nullable
@@ -739,7 +739,7 @@ public abstract class BuildEventServiceModule<OptionsT extends BuildEventService
       ThrowingBuildEventArtifactUploaderSupplier uploaderSupplier,
       CountingArtifactGroupNamer artifactGroupNamer)
       throws IOException {
-    if (Strings.isNullOrEmpty(besOptions.besBackend)) {
+    if (Strings.isNullOrEmpty(besOptions.getBesBackend())) {
       clearBesClient();
       return null;
     }
@@ -795,8 +795,8 @@ public abstract class BuildEventServiceModule<OptionsT extends BuildEventService
                     cmdEnv.getCommandName(),
                     besOptions,
                     cmdEnv.getRuntime().getStartupOptionsProvider()))
-            .setProjectId(besOptions.instanceName)
-            .setCheckPrecedingLifecycleEvents(besOptions.besCheckPrecedingLifecycleEvents)
+            .setProjectId(besOptions.getInstanceName())
+            .setCheckPrecedingLifecycleEvents(besOptions.getBesCheckPrecedingLifecycleEvents())
             .build();
 
     return new BuildEventServiceTransport.Builder()

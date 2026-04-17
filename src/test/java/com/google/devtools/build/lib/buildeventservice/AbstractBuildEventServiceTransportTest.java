@@ -953,8 +953,8 @@ public abstract class AbstractBuildEventServiceTransportTest extends FoundationT
       @Nullable BuildEventArtifactUploader artifactUploader) {
 
     BuildEventServiceOptions besOptions = Options.getDefaults(BuildEventServiceOptions.class);
-    besOptions.besTimeout = closeTimeout;
-    besOptions.besLifecycleEvents = publishLifecycleEvents;
+    besOptions.setBesTimeout(closeTimeout);
+    besOptions.setBesLifecycleEvents(publishLifecycleEvents);
 
     return new BuildEventServiceTransport.Builder()
         .besOptions(besOptions)
