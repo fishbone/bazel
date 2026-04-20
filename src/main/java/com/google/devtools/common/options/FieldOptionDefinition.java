@@ -34,7 +34,9 @@ public class FieldOptionDefinition extends OptionDefinition {
     if (annotation == null) {
       throw new NotAnOptionException(field);
     }
-    return new FieldOptionDefinition(field, annotation);
+    throw new IllegalStateException(
+        "Field options not supported anymore. Use method options instead. Field in error: "
+            + field);
   }
 
   private final Field field;

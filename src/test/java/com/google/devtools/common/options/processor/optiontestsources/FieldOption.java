@@ -13,23 +13,17 @@
 // limitations under the License.
 package com.google.devtools.common.options.processor.optiontestsources;
 
-import com.google.devtools.common.options.Converters.IntegerConverter;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionDocumentationCategory;
 import com.google.devtools.common.options.OptionEffectTag;
 import com.google.devtools.common.options.OptionsBase;
-import com.google.devtools.common.options.OptionsClass;
 
-/** This example options class should fail to compile. */
-@OptionsClass
-public abstract class IncorrectConverterType extends OptionsBase {
+/** This example options class uses a field option, which is no longer supported. */
+public class FieldOption extends OptionsBase {
   @Option(
-      name = "option_has_incorrect_converter_for_type",
-      defaultValue = "strings are strings, not integers",
-      converter = IntegerConverter.class,
+      name = "bad_option",
+      defaultValue = "true",
       documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
       effectTags = {OptionEffectTag.AFFECTS_OUTPUTS})
-  public abstract String getBadOption();
-
-  public abstract void setBadOption(String value);
+  public boolean badOption;
 }
