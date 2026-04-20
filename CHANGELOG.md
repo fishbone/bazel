@@ -1,3 +1,24 @@
+## Release 10.0.0-pre.20260412.1 (2026-04-20)
+
+```
+Baseline: b938ef2838f83980e894c2a0b9ec916f2dea7e14
+```
+
+Incompatible changes:
+
+  - Add support for decompressing Brotli archives (.br, .tar.br)
+  - Removes the deprecated repository rule `new_git_repository`.
+    Users should use `git_repository` instead (they are the same)
+
+Important changes:
+
+  - Adds `-Djava.net.preferIPv6Addresses=system` to startup JVM args
+    which may impact certain IPv4-only environments. Override as
+    necessary with `--host_jvm_args`.
+  - bazelrc config declarations can now be empty
+
+This release contains contributions from many people at Google, as well as Alex Eagle, ijuren8, Jeremy Volkman, Keith Smiley, Mike Lundy, Will Stranton.
+
 ## Release 10.0.0-pre.20260408.3 (2026-04-15)
 
 ```
