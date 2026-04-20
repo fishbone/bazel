@@ -233,7 +233,11 @@ final class SelectedEntrySerializer implements Consumer<SkyKey> {
     var fileOpNodes = new FileOpNodeMemoizingLookup(fingerprintValueService.getExecutor(), graph);
     var fileDependencySerializer =
         new FileDependencySerializer(
-            versionGetter, graph, fileInvalidationWriter, fingerprintValueService.getExecutor());
+            versionGetter,
+            graph,
+            fileInvalidationWriter,
+            fingerprintValueService.getExecutor(),
+            profileCollector);
     var writeStatuses = new SerializationStatus(fileDependencySerializer.getCounters());
     var serializer =
         new SelectedEntrySerializer(

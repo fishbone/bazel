@@ -115,6 +115,20 @@ public final class ProfileRecorderTest {
         .containsExactly(new Sample(getStackText(codecA()), 1, 20));
   }
 
+  @Test
+  public void recordBytesAndPopLocation_worksWithoutCodedOutputStream() throws Exception {
+    var collector = new ProfileCollector();
+    var recorder = new ProfileRecorder(collector);
+
+    recorder.pushLocation(codecA());
+    recorder.recordBytes(50);
+    recorder.popLocation();
+
+    recorder.onSuccess(true);
+    assertThat(getSamples(collector.toProto()))
+        .containsExactly(new Sample(getStackText(codecA()), 1, 50));
+  }
+
   private static CodecA codecA() {
     return CodecA.INSTANCE;
   }
@@ -126,7 +140,7 @@ public final class ProfileRecorderTest {
   private static ImmutableList<String> getStackText(ObjectCodec<?>... codecs) {
     var text = ImmutableList.<String>builder();
     for (var codec : codecs) {
-      text.add(ProfileCollector.getDisplayText(codec));
+      text.add(codec.getLocationText());
     }
     return text.build();
   }

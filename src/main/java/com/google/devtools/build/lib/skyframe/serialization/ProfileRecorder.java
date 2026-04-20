@@ -38,30 +38,40 @@ import java.util.HashMap;
  */
 public final class ProfileRecorder implements FutureCallback<Boolean> {
   private final ProfileCollector profileCollector;
-  private final ArrayList<ObjectCodec<?>> locationStack = new ArrayList<>();
-  private final HashMap<ImmutableList<ObjectCodec<?>>, Counts> bufferedSamples = new HashMap<>();
+  private final ArrayList<ProfilerLocationProvider> locationStack = new ArrayList<>();
+  private final HashMap<ImmutableList<ProfilerLocationProvider>, Counts> bufferedSamples =
+      new HashMap<>();
   private double byteScale = 1.0;
 
-  ProfileRecorder(ProfileCollector profileCollector) {
+  public ProfileRecorder(ProfileCollector profileCollector) {
     this.profileCollector = profileCollector;
   }
 
-  void pushLocation(ObjectCodec<?> codec) {
-    locationStack.add(codec);
+  public void pushLocation(ProfilerLocationProvider provider) {
+    locationStack.add(provider);
   }
 
-  void recordBytesAndPopLocation(int startBytes, CodedOutputStream codedOut) {
-    int bytesWritten = codedOut.getTotalBytesWritten();
-    checkState(bytesWritten >= startBytes);
-
-    ImmutableList<ObjectCodec<?>> stack = profileCollector.getCanonicalStack(locationStack);
-    int byteCount = bytesWritten - startBytes;
+  /** Records the given {@code byteCount} at the current location. */
+  public void recordBytes(int byteCount) {
+    ImmutableList<ProfilerLocationProvider> stack =
+        profileCollector.getCanonicalStack(locationStack);
 
     Counts counts = bufferedSamples.computeIfAbsent(stack, Counts::new);
     counts.count().getAndIncrement();
     counts.totalBytes().getAndAdd(byteCount);
+  }
 
+  /** Pops the current location from the stack. */
+  public void popLocation() {
     locationStack.remove(locationStack.size() - 1);
+  }
+
+  public void recordBytesAndPopLocation(int startBytes, CodedOutputStream codedOut) {
+    int bytesWritten = codedOut.getTotalBytesWritten();
+    checkState(bytesWritten >= startBytes);
+
+    recordBytes(bytesWritten - startBytes);
+    popLocation();
   }
 
   /**

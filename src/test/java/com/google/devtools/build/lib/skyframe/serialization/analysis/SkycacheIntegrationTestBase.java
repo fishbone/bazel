@@ -333,6 +333,8 @@ project = project_pb2.Project.create(project_directories = []) # empty
         proto.getSampleList().stream()
             .filter(sample -> sample.getLocationIdCount() == 1)
             .map(sample -> classNames.get((int) sample.getLocationId(0)))
+            // Skips entries that do not have class names (invalidation data).
+            .filter(name -> name != null)
             .collect(toImmutableList());
 
     // These top-level class names should be relatively stable.

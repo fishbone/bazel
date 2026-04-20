@@ -117,14 +117,15 @@ public final class ProfileCollectorTest {
   public void recordSamples_mergesBatchesAndSubtractsAncestors() {
     var collector = new ProfileCollector();
 
-    var batch = new HashMap<ImmutableList<ObjectCodec<?>>, ProfileCollector.Counts>();
+    var batch = new HashMap<ImmutableList<ProfilerLocationProvider>, ProfileCollector.Counts>();
     @SuppressWarnings("IdentifierName") // false positive
-    ImmutableList<ObjectCodec<?>> stackAB = ImmutableList.of(codecA(), codecB());
+    ImmutableList<ProfilerLocationProvider> stackAB = ImmutableList.of(codecA(), codecB());
     batch.put(
         stackAB,
         new ProfileCollector.Counts(stackAB, new AtomicInteger(1), new AtomicInteger(100)));
     @SuppressWarnings("IdentifierName") // false positive
-    ImmutableList<ObjectCodec<?>> stackABC = ImmutableList.of(codecA(), codecB(), codecC());
+    ImmutableList<ProfilerLocationProvider> stackABC =
+        ImmutableList.of(codecA(), codecB(), codecC());
     batch.put(
         stackABC,
         new ProfileCollector.Counts(stackABC, new AtomicInteger(1), new AtomicInteger(40)));
@@ -173,7 +174,7 @@ public final class ProfileCollectorTest {
     assertThat(anon.getClass().getCanonicalName()).isNull();
 
     var codec = new DynamicCodec(anon.getClass());
-    String text = ProfileCollector.getDisplayText(codec);
+    String text = codec.getLocationText();
     assertThat(text)
         .isEqualTo(anon.getClass().getName() + "(" + DynamicCodec.class.getCanonicalName() + ")");
   }
@@ -418,7 +419,7 @@ public final class ProfileCollectorTest {
   private static ImmutableList<String> getStackText(ObjectCodec<?>... codecs) {
     var text = ImmutableList.<String>builder();
     for (var codec : codecs) {
-      text.add(ProfileCollector.getDisplayText(codec));
+      text.add(codec.getLocationText());
     }
     return text.build();
   }

@@ -124,6 +124,7 @@ java_library(
     deps = [
         ":file_dependency_key_support",
         ":invalidation_data_reference_or_future",
+        ":invalidation_type",
         ":magic_bytes",
         ":missing_skyframe_entry_exception",
         ":value_or_future_map",
@@ -445,4 +446,13 @@ java_library(
         "//third_party:guava",
         "//third_party:jsr305",
     ],
+)
+
+java_library(
+    name = "invalidation_type",
+    srcs = [
+        "InvalidationEntryType.java",
+        "NodeValuePart.java",
+    ],
+    deps = ["//src/main/java/com/google/devtools/build/lib/skyframe/serialization"],
 )

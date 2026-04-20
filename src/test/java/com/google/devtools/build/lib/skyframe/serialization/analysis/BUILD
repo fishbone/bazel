@@ -51,7 +51,6 @@ java_library(
         "//src/main/java/com/google/devtools/build/lib/runtime:blaze_command_cluster",
         "//src/main/java/com/google/devtools/build/lib/runtime/commands",
         "//src/main/java/com/google/devtools/build/lib/skyframe:sky_functions",
-        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis:dependencies_provider",
         "//src/main/java/com/google/devtools/build/lib/util:abrupt_exit_exception",
         "//src/main/java/com/google/devtools/build/lib/util/io:out-err",
         "//src/main/java/com/google/devtools/build/lib/vfs",
@@ -206,6 +205,7 @@ java_test(
         "//src/main/java/com/google/devtools/build/lib/actions:file_metadata",
         "//src/main/java/com/google/devtools/build/lib/skyframe:filesystem_keys",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization",
+        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:write_statuses",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis:file_dependency_serializer",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis:invalidation_data_reference_or_future",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis:missing_skyframe_entry_exception",
@@ -217,6 +217,7 @@ java_test(
         "//third_party:junit4",
         "//third_party:mockito",
         "//third_party:truth",
+        "//third_party/pprof:profile_java_proto",
     ],
 )
 

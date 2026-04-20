@@ -39,7 +39,7 @@ public final class ProfileCollector {
   @VisibleForTesting static final String STORAGE = "storage";
   @VisibleForTesting static final String BYTES = "bytes";
 
-  private final ConcurrentHashMap<ImmutableList<ObjectCodec<?>>, Counts> records =
+  private final ConcurrentHashMap<ImmutableList<ProfilerLocationProvider>, Counts> records =
       new ConcurrentHashMap<>();
 
   /**
@@ -53,14 +53,14 @@ public final class ProfileCollector {
    *     current object being serialized
    * @param byteCount the transitive bytes serialized at the given object
    */
-  void recordSample(List<ObjectCodec<?>> locationStack, int byteCount) {
+  public void recordSample(List<ProfilerLocationProvider> locationStack, int byteCount) {
     var counts = getCounts(locationStack);
     counts.count().getAndIncrement();
     counts.totalBytes().getAndAdd(byteCount);
 
     // Subtracts bytes from the ancestor to avoid double counting.
     if (locationStack.size() > 1) {
-      List<ObjectCodec<?>> prefix = locationStack.subList(0, locationStack.size() - 1);
+      List<ProfilerLocationProvider> prefix = locationStack.subList(0, locationStack.size() - 1);
       getCounts(prefix).totalBytes().getAndAdd(-byteCount);
     }
   }
@@ -74,7 +74,7 @@ public final class ProfileCollector {
    * @param samples a map from location stack to the number of samples and transitive bytes recorded
    *     at that location
    */
-  void recordSamples(Map<ImmutableList<ObjectCodec<?>>, Counts> samples) {
+  void recordSamples(Map<ImmutableList<ProfilerLocationProvider>, Counts> samples) {
     samples.forEach(
         (stack, counts) -> {
           int count = counts.count().get();
@@ -85,7 +85,7 @@ public final class ProfileCollector {
 
           // Subtracts bytes from the ancestor to avoid double counting.
           if (stack.size() > 1) {
-            ImmutableList<ObjectCodec<?>> prefix = stack.subList(0, stack.size() - 1);
+            ImmutableList<ProfilerLocationProvider> prefix = stack.subList(0, stack.size() - 1);
             getCounts(prefix).totalBytes().getAndAdd(-byteCount);
           }
         });
@@ -102,28 +102,20 @@ public final class ProfileCollector {
             return;
           }
           var sample = Sample.newBuilder().addValue(count).addValue(byteCount);
-          for (ObjectCodec<?> codec : Lists.reverse(stack)) {
-            sample.addLocationId(profileBuilder.getOrAddLocation(getDisplayText(codec)));
+          for (ProfilerLocationProvider provider : Lists.reverse(stack)) {
+            sample.addLocationId(profileBuilder.getOrAddLocation(provider.getLocationText()));
           }
           profileBuilder.addSample(sample);
         });
     return profileBuilder.build();
   }
 
-  @VisibleForTesting
-  static String getDisplayText(ObjectCodec<?> codec) {
-    Class<?> encodedClass = codec.getEncodedClass();
-    String name = encodedClass.getCanonicalName();
-    if (name == null) {
-      name = encodedClass.getName(); // anonymous classes have a name, but no canonical name
-    }
-    return name + "(" + codec.getClass().getCanonicalName() + ")";
-  }
-
   /** Stores the profiling counts associated with {@code stack}. */
   record Counts(
-      ImmutableList<ObjectCodec<?>> stack, AtomicInteger count, AtomicInteger totalBytes) {
-    Counts(ImmutableList<ObjectCodec<?>> stack) {
+      ImmutableList<ProfilerLocationProvider> stack,
+      AtomicInteger count,
+      AtomicInteger totalBytes) {
+    Counts(ImmutableList<ProfilerLocationProvider> stack) {
       this(stack, new AtomicInteger(), new AtomicInteger());
     }
   }
@@ -135,11 +127,11 @@ public final class ProfileCollector {
    * simultaneously and each retains stack instances. This allows the memory for those stack
    * instances to be shared.
    */
-  ImmutableList<ObjectCodec<?>> getCanonicalStack(List<ObjectCodec<?>> stack) {
+  ImmutableList<ProfilerLocationProvider> getCanonicalStack(List<ProfilerLocationProvider> stack) {
     return getCounts(stack).stack();
   }
 
-  private Counts getCounts(List<ObjectCodec<?>> locationStack) {
+  private Counts getCounts(List<ProfilerLocationProvider> locationStack) {
     Counts counts = records.get(locationStack);
     if (counts != null) {
       return counts;
