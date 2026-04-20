@@ -57,26 +57,6 @@ public class Options<O extends OptionsBase> {
   }
 
   /**
-   * A convenience function for use in main methods. Parses the command line parameters, and exits
-   * upon error. Also, prints out the usage message if "--help" appears anywhere within {@code
-   * args}.
-   */
-  public static <O extends OptionsBase> Options<O> parseAndExitUponError(
-      Class<O> optionsClass, boolean allowResidue, String... args) {
-    OptionsParser parser = null;
-    try {
-      parser =
-          OptionsParser.builder().optionsClasses(optionsClass).allowResidue(allowResidue).build();
-    } catch (ConstructionException e) {
-      System.err.println("Error constructing the options parser: " + e.getMessage());
-      System.exit(2);
-    }
-    parser.parseAndExitUponError(args);
-    List<String> remainingArgs = parser.getResidue();
-    return new Options<>(parser.getOptions(optionsClass), remainingArgs.toArray(new String[0]));
-  }
-
-  /**
    * Returns an options object at its default values.  The returned object may
    * be freely modified by the caller, by assigning its fields.
    */
