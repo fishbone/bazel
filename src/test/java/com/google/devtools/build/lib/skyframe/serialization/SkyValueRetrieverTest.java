@@ -111,8 +111,7 @@ public final class SkyValueRetrieverTest {
 
     var key = new TrivialKey("a");
     SerializationResult<ByteString> keyBytes =
-        codecs.serializeMemoizedAndBlocking(
-            fingerprintValueService, key, /* profileCollector= */ null);
+        codecs.serializeMemoizedAndBlocking(fingerprintValueService, key);
     assertThat(keyBytes.getFutureToBlockWritesOn()).isNull();
 
     if (testCase.equals(InitialQueryCases.IMMEDIATE_EMPTY_VALUE)) {
@@ -161,8 +160,7 @@ public final class SkyValueRetrieverTest {
 
     var key = new TrivialKey("a");
     SerializationResult<ByteString> keyBytes =
-        codecs.serializeMemoizedAndBlocking(
-            fingerprintValueService, key, /* profileCollector= */ null);
+        codecs.serializeMemoizedAndBlocking(fingerprintValueService, key);
     assertThat(keyBytes.getFutureToBlockWritesOn()).isNull();
 
     if (testCase.equals(InitialQueryCases.IMMEDIATE_EMPTY_VALUE)) {
@@ -1185,16 +1183,14 @@ public final class SkyValueRetrieverTest {
       @Nullable Map<ByteString, ByteString> analysisCacheServiceData)
       throws SerializationException, InterruptedException, ExecutionException {
     SerializationResult<ByteString> keyBytes =
-        codecs.serializeMemoizedAndBlocking(
-            fingerprintValueService, key, /* profileCollector= */ null);
+        codecs.serializeMemoizedAndBlocking(fingerprintValueService, key);
     ListenableFuture<?> writeStatus = keyBytes.getFutureToBlockWritesOn();
     if (writeStatus != null) {
       var unused = writeStatus.get();
     }
 
     SerializationResult<ByteString> valueBytes =
-        codecs.serializeMemoizedAndBlocking(
-            fingerprintValueService, value, /* profileCollector= */ null);
+        codecs.serializeMemoizedAndBlocking(fingerprintValueService, value);
     writeStatus = keyBytes.getFutureToBlockWritesOn();
     if (writeStatus != null) {
       var unused = writeStatus.get();

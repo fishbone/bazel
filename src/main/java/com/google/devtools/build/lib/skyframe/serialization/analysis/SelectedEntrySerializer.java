@@ -45,6 +45,7 @@ import com.google.devtools.build.lib.profiler.Profiler;
 import com.google.devtools.build.lib.skyframe.FileOpNodeOrFuture.FileOpNode;
 import com.google.devtools.build.lib.skyframe.FileOpNodeOrFuture.FileOpNodeOrEmpty;
 import com.google.devtools.build.lib.skyframe.FileOpNodeOrFuture.FutureFileOpNode;
+import com.google.devtools.build.lib.skyframe.serialization.AsyncSerializationTask;
 import com.google.devtools.build.lib.skyframe.serialization.FingerprintValueService;
 import com.google.devtools.build.lib.skyframe.serialization.FrontierNodeVersion;
 import com.google.devtools.build.lib.skyframe.serialization.KeyValueWriter;
@@ -358,46 +359,43 @@ final class SelectedEntrySerializer implements Consumer<SkyKey> {
     writeStatuses.counters.entriesWaitingForValueBytes.incrementAndGet();
     writeStatuses.counters.entriesWaitingForInvalidationInfo.incrementAndGet();
 
-    ListenableFuture<SerializationResult<ByteString>> futureKeyBytes =
-        Futures.submitAsync(
-            () -> codecs.serializeMemoizedAsync(fingerprintValueService, key, profileCollector),
-            fingerprintValueService.getExecutor());
+    // Keys are always stored as fingerprints so their detailed profiles are omitted.
+    AsyncSerializationTask keyResultTask =
+        codecs.serializeMemoizedAsync(fingerprintValueService, key, /* profileCollector= */ null);
+    fingerprintValueService.getExecutor().execute(keyResultTask);
+    AsyncSerializationTask valueResultTask =
+        codecs.serializeMemoizedAsync(
+            fingerprintValueService, nodeEntry.getValue(), profileCollector);
+    fingerprintValueService.getExecutor().execute(valueResultTask);
 
-    ListenableFuture<SerializationResult<ByteString>> futureValueBytes =
-        Futures.submitAsync(
-            () ->
-                codecs.serializeMemoizedAsync(
-                    fingerprintValueService, nodeEntry.getValue(), profileCollector),
-            fingerprintValueService.getExecutor());
-
-    futureKeyBytes.addListener(
+    keyResultTask.addListener(
         () -> writeStatuses.counters.entriesWaitingForKeyBytes.decrementAndGet(), directExecutor());
-    futureValueBytes.addListener(
+    valueResultTask.addListener(
         () -> writeStatuses.counters.entriesWaitingForValueBytes.decrementAndGet(),
         directExecutor());
 
     new FileOpNodeProcessor(
-            futureKeyBytes, futureValueBytes, isExecutionValue(key), key, dependencyKey, before)
+            keyResultTask, valueResultTask, isExecutionValue(key), key, dependencyKey, before)
         .run();
   }
 
   private final class FileOpNodeProcessor implements FutureCallback<FileOpNodeOrEmpty>, Runnable {
-    private final ListenableFuture<SerializationResult<ByteString>> futureKeyBytes;
-    private final ListenableFuture<SerializationResult<ByteString>> futureValueBytes;
+    private final AsyncSerializationTask keyResultTask;
+    private final AsyncSerializationTask valueResultTask;
     private final boolean isExecutionValue;
     private final SkyKey skyKey;
     private final ActionLookupKey dependencyKey;
     private final Instant start;
 
     private FileOpNodeProcessor(
-        ListenableFuture<SerializationResult<ByteString>> futureKeyBytes,
-        ListenableFuture<SerializationResult<ByteString>> futureValueBytes,
+        AsyncSerializationTask keyResultTask,
+        AsyncSerializationTask valueResultTask,
         boolean isExecutionValue,
         SkyKey skyKey,
         ActionLookupKey dependencyKey,
         Instant start) {
-      this.futureKeyBytes = futureKeyBytes;
-      this.futureValueBytes = futureValueBytes;
+      this.keyResultTask = keyResultTask;
+      this.valueResultTask = valueResultTask;
       this.isExecutionValue = isExecutionValue;
       this.skyKey = skyKey;
       this.dependencyKey = dependencyKey;
@@ -426,20 +424,20 @@ final class SelectedEntrySerializer implements Consumer<SkyKey> {
             case FileOpNode node ->
                 switch (fileDependencySerializer.registerDependency(node)) {
                   case InvalidationDataInfo dataInfo ->
-                      whenAllSucceed(futureKeyBytes, futureValueBytes)
+                      whenAllSucceed(keyResultTask, valueResultTask)
                           .call(() -> dataInfo, directExecutor());
                   case FutureFileDataInfo futureFile ->
-                      whenAllSucceed(futureKeyBytes, futureValueBytes, futureFile)
+                      whenAllSucceed(keyResultTask, valueResultTask, futureFile)
                           .call(() -> Futures.getDone(futureFile), directExecutor());
                   case FutureListingDataInfo futureListing ->
-                      whenAllSucceed(futureKeyBytes, futureValueBytes, futureListing)
+                      whenAllSucceed(keyResultTask, valueResultTask, futureListing)
                           .call(() -> Futures.getDone(futureListing), directExecutor());
                   case FutureNodeDataInfo futureNode ->
-                      whenAllSucceed(futureKeyBytes, futureValueBytes, futureNode)
+                      whenAllSucceed(keyResultTask, valueResultTask, futureNode)
                           .call(() -> Futures.getDone(futureNode), directExecutor());
                 };
             case EMPTY_FILE_OP_NODE ->
-                whenAllSucceed(futureKeyBytes, futureValueBytes).call(() -> null, directExecutor());
+                whenAllSucceed(keyResultTask, valueResultTask).call(() -> null, directExecutor());
           };
       Futures.addCallback(
           futureDataInfo, new InvalidationDataInfoHandler(), fingerprintValueService.getExecutor());
@@ -490,16 +488,16 @@ final class SelectedEntrySerializer implements Consumer<SkyKey> {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         CodedOutputStream codedOut = CodedOutputStream.newInstance(bytesOut);
 
-        SerializationResult<ByteString> keyBytes;
-        SerializationResult<ByteString> valueBytes;
+        SerializationResult<ByteString> keyResult;
+        SerializationResult<ByteString> valueResult;
         try {
-          keyBytes = Futures.getDone(futureKeyBytes);
-          valueBytes = Futures.getDone(futureValueBytes);
+          keyResult = Futures.getDone(keyResultTask);
+          valueResult = Futures.getDone(valueResultTask);
         } catch (ExecutionException e) {
           throw new IllegalStateException("should have succeeded as part of the FutureCombiner", e);
         }
-        writeStatuses.addWriteStatus(valueBytes.getFutureToBlockWritesOn());
-        writeStatuses.addWriteStatus(keyBytes.getFutureToBlockWritesOn());
+        writeStatuses.addWriteStatus(valueResult.getFutureToBlockWritesOn());
+        writeStatuses.addWriteStatus(keyResult.getFutureToBlockWritesOn());
 
         try {
           switch (dataInfo) {
@@ -528,7 +526,7 @@ final class SelectedEntrySerializer implements Consumer<SkyKey> {
               writeStatuses.addWriteStatus(node.writeStatus());
               break;
           }
-          codedOut.writeRawBytes(valueBytes.getObject());
+          codedOut.writeRawBytes(valueResult.getObject());
           codedOut.flush();
         } catch (IOException e) {
           // A ByteArrayOutputStream backed CodedOutputStream doesn't throw IOExceptions.
@@ -536,7 +534,7 @@ final class SelectedEntrySerializer implements Consumer<SkyKey> {
         }
         PackedFingerprint versionedKey =
             fingerprintValueService.fingerprint(
-                frontierVersion.concat(keyBytes.getObject().toByteArray()));
+                frontierVersion.concat(keyResult.getObject().toByteArray()));
         byte[] entryBytes = bytesOut.toByteArray();
 
         // Put this in a separate variable so that we don't close over potentially large byte arrays
@@ -548,17 +546,27 @@ final class SelectedEntrySerializer implements Consumer<SkyKey> {
         writeStatuses.counters.valueBytesWaitingForUpload.addAndGet(valueByteCount);
 
         WriteStatus putStatus = fingerprintValueService.put(versionedKey, entryBytes);
+        valueResultTask.registerWriteStatus(putStatus);
+
         putStatus.addListener(
             () -> {
-              // This counts bytes failed to upload as "uploaded" also. This is somewhat misleading
-              // but
-              // probably okay since we don't care much about cases with failures.
               writeStatuses.counters.entriesWaitingForUpload.decrementAndGet();
               writeStatuses.counters.keyBytesWaitingForUpload.addAndGet(-keyByteCount);
               writeStatuses.counters.valueBytesWaitingForUpload.addAndGet(-valueByteCount);
-              writeStatuses.counters.entriesUploaded.incrementAndGet();
-              writeStatuses.counters.keyBytesUploaded.addAndGet(keyByteCount);
-              writeStatuses.counters.valueBytesUploaded.addAndGet(valueByteCount);
+              boolean shouldUpdateCounts;
+              try {
+                // Avoids updating counts if the writes are marked as duplicates. Note that
+                // duplicate detection is not ordinarily enabled.
+                shouldUpdateCounts = Futures.getDone(putStatus);
+              } catch (ExecutionException e) {
+                // This error is propagated to the main control flow via `writeStatuses`.
+                shouldUpdateCounts = false;
+              }
+              if (shouldUpdateCounts) {
+                writeStatuses.counters.entriesUploaded.incrementAndGet();
+                writeStatuses.counters.keyBytesUploaded.addAndGet(keyByteCount);
+                writeStatuses.counters.valueBytesUploaded.addAndGet(valueByteCount);
+              }
             },
             directExecutor());
 

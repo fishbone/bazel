@@ -18,6 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+import static com.google.devtools.build.lib.skyframe.serialization.FutureHelpers.waitForSerializationFuture;
 import static com.google.devtools.build.lib.skyframe.serialization.strings.UnsafeStringCodec.stringCodec;
 import static java.util.concurrent.ForkJoinPool.commonPool;
 
@@ -110,6 +111,31 @@ public final class ProfileCollectorTest {
             new Sample(getStackText(codecB(), codecA()), 2, 6),
             // 3 samples, bytes = 25 + 10 + 1 - (20 + 5) = 11.
             new Sample(getStackText(codecA()), 3, 11));
+  }
+
+  @Test
+  public void recordSamples_mergesBatchesAndSubtractsAncestors() {
+    var collector = new ProfileCollector();
+
+    var batch = new HashMap<ImmutableList<ObjectCodec<?>>, ProfileCollector.Counts>();
+    @SuppressWarnings("IdentifierName") // false positive
+    ImmutableList<ObjectCodec<?>> stackAB = ImmutableList.of(codecA(), codecB());
+    batch.put(
+        stackAB,
+        new ProfileCollector.Counts(stackAB, new AtomicInteger(1), new AtomicInteger(100)));
+    @SuppressWarnings("IdentifierName") // false positive
+    ImmutableList<ObjectCodec<?>> stackABC = ImmutableList.of(codecA(), codecB(), codecC());
+    batch.put(
+        stackABC,
+        new ProfileCollector.Counts(stackABC, new AtomicInteger(1), new AtomicInteger(40)));
+
+    collector.recordSamples(batch);
+
+    assertThat(getSamples(collector.toProto()))
+        .containsExactly(
+            new Sample(getStackText(codecC(), codecB(), codecA()), 1, 40),
+            new Sample(getStackText(codecB(), codecA()), 1, 60),
+            new Sample(getStackText(codecA()), 0, -100));
   }
 
   private static CodecA codecA() {
@@ -262,9 +288,12 @@ public final class ProfileCollectorTest {
                 try {
                   SerializationResult<ByteString> result;
                   try {
-                    result =
-                        codecs.serializeMemoizedAndBlocking(
+                    AsyncSerializationTask asyncTask =
+                        codecs.serializeMemoizedAsync(
                             fingerprintValueService, subject, profileCollector);
+                    asyncTask.run();
+                    asyncTask.registerWriteStatus(WriteStatuses.immediateWriteStatus());
+                    result = waitForSerializationFuture(asyncTask);
                   } catch (SerializationException e) {
                     writeStatuses.add(immediateFailedFuture(e));
                     return;

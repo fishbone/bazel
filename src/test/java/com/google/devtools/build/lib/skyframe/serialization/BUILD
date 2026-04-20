@@ -377,7 +377,23 @@ java_test(
     srcs = ["ProfileCollectorTest.java"],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization",
+        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:write_statuses",
         "//third_party:error_prone_annotations",
+        "//third_party:guava",
+        "//third_party:junit4",
+        "//third_party:truth",
+        "//third_party/pprof:profile_java_proto",
+        "@com_google_protobuf//:protobuf_java",
+    ],
+)
+
+java_test(
+    name = "ProfileRecorderTest",
+    size = "small",
+    srcs = ["ProfileRecorderTest.java"],
+    deps = [
+        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization",
+        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:write_statuses",
         "//third_party:guava",
         "//third_party:junit4",
         "//third_party:truth",
@@ -457,6 +473,7 @@ java_library(
         "//third_party:junit4",
         "//third_party:mockito",
         "//third_party:truth",
+        "//third_party/pprof:profile_java_proto",
         "@com_google_protobuf//:protobuf_java",
         "@maven//:com_google_testparameterinjector_test_parameter_injector",
         "@maven//:org_apache_commons_commons_lang3",

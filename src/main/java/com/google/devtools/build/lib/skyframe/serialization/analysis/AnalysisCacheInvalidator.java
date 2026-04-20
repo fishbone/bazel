@@ -28,11 +28,11 @@ import com.google.devtools.build.lib.events.Event;
 import com.google.devtools.build.lib.events.ExtendedEventHandler;
 import com.google.devtools.build.lib.profiler.Profiler;
 import com.google.devtools.build.lib.profiler.SilentCloseable;
+import com.google.devtools.build.lib.skyframe.serialization.AsyncSerializationTask;
 import com.google.devtools.build.lib.skyframe.serialization.FingerprintValueService;
 import com.google.devtools.build.lib.skyframe.serialization.FrontierNodeVersion;
 import com.google.devtools.build.lib.skyframe.serialization.ObjectCodecs;
 import com.google.devtools.build.lib.skyframe.serialization.PackedFingerprint;
-import com.google.devtools.build.lib.skyframe.serialization.SerializationResult;
 import com.google.devtools.build.skyframe.SkyKey;
 import com.google.protobuf.ByteString;
 import java.util.Objects;
@@ -157,13 +157,14 @@ public final class AnalysisCacheInvalidator {
    */
   private ListenableFuture<Optional<SkyKey>> submitInvalidationLookup(SkyKey key) {
     // 1. Serialize the key
-    ListenableFuture<SerializationResult<ByteString>> serializedKey =
+    AsyncSerializationTask serializeKeyTask =
         codecs.serializeMemoizedAsync(fingerprintService, key, null);
+    serializeKeyTask.run();
 
     // 2. Compute the fingerprint from the serialized blob
     ListenableFuture<PackedFingerprint> fingerprint =
         Futures.transform(
-            serializedKey,
+            serializeKeyTask,
             k -> fingerprintService.fingerprint(currentVersion.concat(k.getObject().toByteArray())),
             ForkJoinPool.commonPool());
 

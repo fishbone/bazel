@@ -24,6 +24,7 @@ import com.google.perftools.profiles.ProfileProto.Sample;
 import com.google.perftools.profiles.ProfileProto.ValueType;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -64,37 +65,49 @@ public final class ProfileCollector {
     }
   }
 
-  /** Creates the {@link Proto} from the accumulated samples. */
+  /**
+   * Records a batch of samples.
+   *
+   * <p>This is used to merge samples from a {@link ProfileRecorder} after its novelty check
+   * completes.
+   *
+   * @param samples a map from location stack to the number of samples and transitive bytes recorded
+   *     at that location
+   */
+  void recordSamples(Map<ImmutableList<ObjectCodec<?>>, Counts> samples) {
+    samples.forEach(
+        (stack, counts) -> {
+          int count = counts.count().get();
+          int byteCount = counts.totalBytes().get();
+          var target = getCounts(stack);
+          target.count().getAndAdd(count);
+          target.totalBytes().getAndAdd(byteCount);
+
+          // Subtracts bytes from the ancestor to avoid double counting.
+          if (stack.size() > 1) {
+            ImmutableList<ObjectCodec<?>> prefix = stack.subList(0, stack.size() - 1);
+            getCounts(prefix).totalBytes().getAndAdd(-byteCount);
+          }
+        });
+  }
+
+  /** Creates the {@link Profile} from the accumulated samples. */
   public Profile toProto() {
     var profileBuilder = new ProtoBuilder();
     records.forEach(
         (stack, counts) -> {
-          var sample =
-              Sample.newBuilder()
-                  .addValue(counts.count().get())
-                  .addValue(counts.totalBytes().get());
+          int count = counts.count().get();
+          int byteCount = counts.totalBytes().get();
+          if (count == 0 && byteCount == 0) {
+            return;
+          }
+          var sample = Sample.newBuilder().addValue(count).addValue(byteCount);
           for (ObjectCodec<?> codec : Lists.reverse(stack)) {
             sample.addLocationId(profileBuilder.getOrAddLocation(getDisplayText(codec)));
           }
           profileBuilder.addSample(sample);
         });
     return profileBuilder.build();
-  }
-
-  private Counts getCounts(List<ObjectCodec<?>> locationStack) {
-    var counts = records.get(locationStack);
-    if (counts != null) {
-      return counts;
-    }
-    var stack = ImmutableList.copyOf(locationStack);
-    // putIfAbsent has less contention than computeIfAbsent because the latter causes the allocation
-    // of Counts to be inside the critical section.
-    var newCounts = new Counts();
-    var previousCounts = records.putIfAbsent(stack, newCounts);
-    if (previousCounts != null) {
-      return previousCounts;
-    }
-    return newCounts;
   }
 
   @VisibleForTesting
@@ -107,10 +120,39 @@ public final class ProfileCollector {
     return name + "(" + codec.getClass().getCanonicalName() + ")";
   }
 
-  private record Counts(AtomicInteger count, AtomicInteger totalBytes) {
-    private Counts() {
-      this(new AtomicInteger(), new AtomicInteger());
+  /** Stores the profiling counts associated with {@code stack}. */
+  record Counts(
+      ImmutableList<ObjectCodec<?>> stack, AtomicInteger count, AtomicInteger totalBytes) {
+    Counts(ImmutableList<ObjectCodec<?>> stack) {
+      this(stack, new AtomicInteger(), new AtomicInteger());
     }
+  }
+
+  /**
+   * Obtains a deduplicated instance of the {@code stack}.
+   *
+   * <p>In practice, many parallel instances of {@link ProfileRecorder} will be in flight
+   * simultaneously and each retains stack instances. This allows the memory for those stack
+   * instances to be shared.
+   */
+  ImmutableList<ObjectCodec<?>> getCanonicalStack(List<ObjectCodec<?>> stack) {
+    return getCounts(stack).stack();
+  }
+
+  private Counts getCounts(List<ObjectCodec<?>> locationStack) {
+    Counts counts = records.get(locationStack);
+    if (counts != null) {
+      return counts;
+    }
+    var stack = ImmutableList.copyOf(locationStack);
+    // putIfAbsent has less contention than computeIfAbsent because the latter causes the allocation
+    // of Counts to be inside the critical section.
+    var newCounts = new Counts(stack);
+    Counts previousCounts = records.putIfAbsent(stack, newCounts);
+    if (previousCounts != null) {
+      return previousCounts;
+    }
+    return newCounts;
   }
 
   private static class ProtoBuilder {

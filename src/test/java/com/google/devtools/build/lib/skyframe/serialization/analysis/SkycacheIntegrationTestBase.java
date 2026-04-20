@@ -341,7 +341,6 @@ project = project_pb2.Project.create(project_directories = []) # empty
             "com.google.devtools.build.lib.actions.Artifact.DerivedArtifact",
             "com.google.devtools.build.lib.actions.Artifact.SourceArtifact",
             "com.google.devtools.build.lib.analysis.ConfiguredTargetValue",
-            "com.google.devtools.build.lib.skyframe.ConfiguredTargetKey",
             "com.google.devtools.build.lib.cmdline.Label",
             "java.lang.Object[]");
 
