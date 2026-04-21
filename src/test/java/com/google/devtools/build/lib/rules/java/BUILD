@@ -183,17 +183,13 @@ java_test(
     jvm_flags = [
         "-Djava.lang.Thread.allowVirtualThreads=true",
     ],
-    shard_count = 15,
     deps = [
         ":java-info",
-        ":java_test_util",
-        "//src/main/java/com/google/devtools/build/lib/analysis:analysis_cluster",
         "//src/main/java/com/google/devtools/build/lib/rules/java:java-compilation",
         "//src/main/java/com/google/devtools/build/lib/starlarkbuildapi/java",
         "//src/main/java/net/starlark/java/annot",
         "//src/test/java/com/google/devtools/build/lib/analysis/util",
         "//src/test/java/com/google/devtools/build/lib/testutil:TestConstants",
-        "//third_party:guava",
         "//third_party:junit4",
         "//third_party:truth",
         "@maven//:com_google_testparameterinjector_test_parameter_injector",

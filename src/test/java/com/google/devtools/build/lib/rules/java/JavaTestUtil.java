@@ -34,51 +34,6 @@ public class JavaTestUtil {
 
   private JavaTestUtil() {}
 
-  /** Writes BUILD file for java toolchain to scratch. */
-  static void writeBuildFileForJavaToolchain(Scratch scratch) throws Exception {
-    scratch.file("java/com/google/test/turbine_canary_deploy.jar");
-    scratch.file("java/com/google/test/turbine_graal");
-    scratch.file("java/com/google/test/tzdata.jar");
-    scratch.overwriteFile(
-        "java/com/google/test/BUILD",
-        "load('@rules_java//java:defs.bzl', 'java_runtime',"
-            + " 'java_toolchain')",
-        "java_toolchain(name = 'toolchain',",
-        "    source_version = '6',",
-        "    target_version = '6',",
-        "    bootclasspath = ['rt.jar'],",
-        "    xlint = ['toto'],",
-        "    javacopts =['-Xmaxerrs 500'],",
-        "    compatible_javacopts = {",
-        "        'appengine': ['-XDappengineCompatible'],",
-        "        'android': ['-XDandroidCompatible'],",
-        "    },",
-        "    tools = [':javac_canary.jar'],",
-        "    javabuilder = ':JavaBuilder_deploy.jar',",
-        "    jacocorunner = ':jacocorunner.jar',",
-        "    header_compiler = ':turbine_canary_deploy.jar',",
-        "    header_compiler_direct = ':turbine_graal',",
-        "    singlejar = 'singlejar',",
-        "    ijar = 'ijar',",
-        "    genclass = 'GenClass_deploy.jar',",
-        "    timezone_data = 'tzdata.jar',",
-        "    java_runtime = ':jvm-k8'",
-        ")",
-        "java_runtime(",
-        "    name = 'jvm-k8',",
-        "    srcs = [",
-        "        'k8/a', ",
-        "        'k8/b',",
-        "    ], ",
-        "    java_home = 'k8',",
-        ")",
-        "toolchain(",
-        "    name = 'java_toolchain',",
-        "    toolchain = ':toolchain',",
-        "    toolchain_type = '" + TestConstants.TOOLS_REPOSITORY + "//tools/jdk:toolchain_type',",
-        ")");
-  }
-
   public static void setupPlatform(
       AnalysisMock analysisMock,
       MockToolsConfig mockToolsConfig,
