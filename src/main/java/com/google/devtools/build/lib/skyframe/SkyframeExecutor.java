@@ -111,6 +111,7 @@ import com.google.devtools.build.lib.analysis.config.ExecutionTransitionFactory;
 import com.google.devtools.build.lib.analysis.config.InvalidConfigurationException;
 import com.google.devtools.build.lib.analysis.config.StarlarkExecTransitionLoader;
 import com.google.devtools.build.lib.analysis.config.StarlarkExecTransitionLoader.StarlarkExecTransitionLoadingException;
+import com.google.devtools.build.lib.analysis.config.StarlarkTransitionCache;
 import com.google.devtools.build.lib.analysis.config.transitions.PatchTransition;
 import com.google.devtools.build.lib.analysis.config.transitions.TransitionUtil;
 import com.google.devtools.build.lib.analysis.constraints.RuleContextConstraintSemantics;
@@ -118,6 +119,7 @@ import com.google.devtools.build.lib.analysis.platform.PlatformFunction;
 import com.google.devtools.build.lib.analysis.platform.PlatformValue;
 import com.google.devtools.build.lib.analysis.producers.ConfiguredTargetAndDataProducer;
 import com.google.devtools.build.lib.analysis.starlark.StarlarkAttributeTransitionProvider;
+import com.google.devtools.build.lib.analysis.starlark.StarlarkBuildSettingsDetailsValue;
 import com.google.devtools.build.lib.bazel.bzlmod.BazelDepGraphValue;
 import com.google.devtools.build.lib.bazel.repository.RepoDefinitionFunction;
 import com.google.devtools.build.lib.bazel.repository.RepoDefinitionValue;
@@ -1574,7 +1576,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
   }
 
   /** Adjusts the baseline options for the exec transition. */
-  private static BuildOptions adjustForExec(
+  private BuildOptions adjustForExec(
       BuildOptions baselineOptions,
       StarlarkAttributeTransitionProvider starlarkExecTransition,
       Label newPlatform,
@@ -1596,9 +1598,39 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
                                 "//this_is_a_faked_exec_platform_for_blaze_internals"))
                     .analysisData(starlarkExecTransition)
                     .build());
+
+    ImmutableMap<String, Label> flagsAliases =
+        baselineOptions.get(CoreOptions.class).getCommandLineFlagAliasesMap();
+
+    ImmutableSet.Builder<Label> hostFlags = ImmutableSet.builder();
+    for (Map.Entry<String, Label> alias : flagsAliases.entrySet()) {
+      if (alias.getKey().startsWith("host_")) {
+        hostFlags.add(alias.getValue());
+      }
+    }
+
+    // ImmutableSet.copyOf() is needed here because AutoCodec doesn't have a mapping for
+    // ImmutableMap.KeySet and this could cause a serialization failure even though the
+    // key content remains the same before and after serialization and deserialization.
+    StarlarkBuildSettingsDetailsValue.Key starlarkBuildSettingsDetailsKey =
+        StarlarkBuildSettingsDetailsValue.Key.create(
+            ImmutableSet.copyOf(baselineOptions.getStarlarkOptions().keySet()),
+            ImmutableSet.copyOf(hostFlags.build()));
+    EvaluationResult<StarlarkBuildSettingsDetailsValue> result =
+        evaluate(
+            ImmutableList.of(starlarkBuildSettingsDetailsKey),
+            /* keepGoing= */ true,
+            /* numThreads= */ 1,
+            eventHandler);
+
+    BuildOptions optionsWithDefaults =
+        StarlarkTransitionCache.getDefaultStarlarkOptionsForCustomExec(
+            baselineOptions.toBuilder(),
+            result.get(starlarkBuildSettingsDetailsKey),
+            baselineOptions);
     baselineOptions =
         execTransition.patch(
-            TransitionUtil.restrict(execTransition, baselineOptions), eventHandler);
+            TransitionUtil.restrict(execTransition, optionsWithDefaults), eventHandler);
 
     return baselineOptions;
   }
