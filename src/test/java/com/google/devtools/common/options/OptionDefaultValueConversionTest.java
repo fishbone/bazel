@@ -70,7 +70,7 @@ public class OptionDefaultValueConversionTest {
               .filter(c -> !isTestClass(c))
               .flatMap(c -> stream(c.getMethods()))
               .filter(f -> f.isAnnotationPresent(Option.class))
-              .map(MethodOptionDefinition::extractOptionDefinition)
+              .map(MethodOptionDefinition::from)
               .collect(toList());
       logger.atFine().log(
           "Found %d Option-annotated fields in Prod code", optionDefinitions.size());
