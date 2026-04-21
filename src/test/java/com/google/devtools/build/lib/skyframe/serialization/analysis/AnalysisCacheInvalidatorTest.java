@@ -89,7 +89,7 @@ public final class AnalysisCacheInvalidatorTest {
     when(mockAnalysisCacheClient.lookup(ByteString.copyFrom(fingerprint.toBytes())))
         .thenReturn(
             immediateFuture(
-                new RemoteAnalysisCacheClient.LookupResult(
+                new LookupResult(
                     ByteString.copyFromUtf8("some_value"), MissReason.MISS_REASON_UNSPECIFIED)));
 
     AnalysisCacheInvalidator invalidator =
@@ -120,8 +120,7 @@ public final class AnalysisCacheInvalidatorTest {
     when(mockAnalysisCacheClient.lookup(ByteString.copyFrom(fingerprint.toBytes())))
         .thenReturn(
             immediateFuture(
-                new RemoteAnalysisCacheClient.LookupResult(
-                    ByteString.EMPTY, MissReason.MISS_REASON_UNSPECIFIED)));
+                new LookupResult(ByteString.EMPTY, MissReason.MISS_REASON_UNSPECIFIED)));
 
     AnalysisCacheInvalidator invalidator =
         new AnalysisCacheInvalidator(
@@ -156,13 +155,12 @@ public final class AnalysisCacheInvalidatorTest {
     when(mockAnalysisCacheClient.lookup(ByteString.copyFrom(hitFingerprint.toBytes())))
         .thenReturn(
             immediateFuture(
-                new RemoteAnalysisCacheClient.LookupResult(
+                new LookupResult(
                     ByteString.copyFromUtf8("some_value"), MissReason.MISS_REASON_UNSPECIFIED)));
     when(mockAnalysisCacheClient.lookup(ByteString.copyFrom(missFingerprint.toBytes())))
         .thenReturn(
             immediateFuture(
-                new RemoteAnalysisCacheClient.LookupResult(
-                    ByteString.EMPTY, MissReason.MISS_REASON_UNSPECIFIED)));
+                new LookupResult(ByteString.EMPTY, MissReason.MISS_REASON_UNSPECIFIED)));
 
     AnalysisCacheInvalidator invalidator =
         new AnalysisCacheInvalidator(
@@ -315,8 +313,7 @@ public final class AnalysisCacheInvalidatorTest {
     when(mockAnalysisCacheClient.lookup(ByteString.copyFrom(packedFingerprint.toBytes())))
         .thenReturn(
             immediateFuture(
-                new RemoteAnalysisCacheClient.LookupResult(
-                    ByteString.EMPTY, MissReason.MISS_REASON_UNSPECIFIED)));
+                new LookupResult(ByteString.EMPTY, MissReason.MISS_REASON_UNSPECIFIED)));
 
     AnalysisCacheInvalidator invalidator =
         new AnalysisCacheInvalidator(

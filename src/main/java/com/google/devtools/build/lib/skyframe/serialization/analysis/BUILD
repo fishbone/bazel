@@ -270,11 +270,24 @@ java_library(
 )
 
 java_library(
-    name = "remote_analysis_cache_client",
-    srcs = ["RemoteAnalysisCacheClient.java"],
+    name = "lookup_result",
+    srcs = [
+        "LookupResult.java",
+        "LookupTopLevelTargetsResult.java",
+    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis/proto:analysis_cache_service_metadata_status_java_proto",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis/proto:analysis_cache_service_miss_reason_java_proto",
+        "@com_google_protobuf//:protobuf_java",
+    ],
+)
+
+java_library(
+    name = "remote_analysis_cache_client",
+    srcs = ["RemoteAnalysisCacheClient.java"],
+    deps = [
+        ":lookup_result",
+        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis/proto:analysis_cache_service_metadata_status_java_proto",
         "//src/main/java/com/google/devtools/build/lib/util:decimal_bucketer",
         "//third_party:guava",
         "@com_google_protobuf//:protobuf_java",
@@ -312,6 +325,7 @@ java_library(
     srcs = ["AnalysisCacheInvalidator.java"],
     deps = [
         ":client_id",
+        ":lookup_result",
         ":remote_analysis_cache_client",
         ":remote_analysis_caching_server_state",
         "//src/main/java/com/google/devtools/build/lib/events",
@@ -367,6 +381,7 @@ java_library(
         ":analysis_cache_invalidator",
         ":dependencies_provider",
         ":frontier_serializer",
+        ":lookup_result",
         ":options",
         ":remote_analysis_cache_client",
         ":remote_analysis_cache_deps",

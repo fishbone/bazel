@@ -169,7 +169,7 @@ public final class AnalysisCacheInvalidator {
             ForkJoinPool.commonPool());
 
     // 3. Submit the fingerprint to the analysis cache service
-    ListenableFuture<RemoteAnalysisCacheClient.LookupResult> responseFuture =
+    ListenableFuture<LookupResult> responseFuture =
         Futures.transformAsync(
             fingerprint,
             f -> analysisCacheClient.lookup(ByteString.copyFrom(f.toBytes())),
