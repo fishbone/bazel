@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,20 +88,12 @@ public class IsolatedOptionsData extends OpaqueOptionsData {
             for (Method method : optionsBaseClass.getMethods()) {
               try {
                 MethodOptionDefinition optionDefinition =
-                    MethodOptionDefinition.extractOptionDefinition(method, optionsBaseClass);
+                    MethodOptionDefinition.extractOptionDefinition(method);
                 if (optionDefinition != null) {
                   builder.add(optionDefinition);
                 }
               } catch (OptionDefinition.NotAnOptionException e) {
                 // Ignore non-@Option annotated methods.
-              }
-            }
-          } else {
-            for (Field field : optionsBaseClass.getFields()) {
-              try {
-                builder.add(FieldOptionDefinition.extractOptionDefinition(field));
-              } catch (OptionDefinition.NotAnOptionException e) {
-                // Ignore non-@Option annotated fields.
               }
             }
           }
