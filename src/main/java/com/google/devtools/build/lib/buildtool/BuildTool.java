@@ -79,7 +79,6 @@ import com.google.devtools.build.lib.runtime.BlazeRuntime;
 import com.google.devtools.build.lib.runtime.CommandEnvironment;
 import com.google.devtools.build.lib.runtime.CommandLineEvent;
 import com.google.devtools.build.lib.runtime.CommandLineEvent.CanonicalCommandLineEvent;
-import com.google.devtools.build.lib.runtime.CommandLineEvent.OriginalCommandLineEvent;
 import com.google.devtools.build.lib.runtime.ExecRootEvent;
 import com.google.devtools.build.lib.runtime.KeepStateAfterBuildOption;
 import com.google.devtools.build.lib.runtime.StarlarkOptionsParser;
@@ -348,8 +347,7 @@ public class BuildTool {
                     optionsParser
                         .getOptions(BuildEventProtocolOptions.class)
                         .getIncludeResidueInRunBepEvent(),
-                    optionsParser.getExplicitStarlarkOptions(
-                        OriginalCommandLineEvent::commandLinePriority),
+                    optionsParser.getExplicitCommandLineStarlarkOptions(),
                     optionsParser.getStarlarkOptions(),
                     optionsParser.asListOfCanonicalOptions(),
                     // This replaces the tentative CanonicalCommandLineEvent posted earlier in the

@@ -301,7 +301,6 @@ import com.google.devtools.common.options.Options;
 import com.google.devtools.common.options.OptionsBase;
 import com.google.devtools.common.options.OptionsParsingResult;
 import com.google.devtools.common.options.OptionsProvider;
-import com.google.devtools.common.options.ParsedOptionDescription;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.ForOverride;
 import java.io.PrintStream;
@@ -3714,8 +3713,7 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
           }
 
           @Override
-          public ImmutableMap<String, Object> getExplicitStarlarkOptions(
-              java.util.function.Predicate<? super ParsedOptionDescription> filter) {
+          public ImmutableMap<String, Object> getExplicitCommandLineStarlarkOptions() {
             return ImmutableMap.of();
           }
 

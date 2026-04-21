@@ -15,7 +15,6 @@ package com.google.devtools.common.options;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 /**
@@ -47,8 +46,7 @@ public interface OptionsProvider {
         }
 
         @Override
-        public ImmutableMap<String, Object> getExplicitStarlarkOptions(
-            Predicate<? super ParsedOptionDescription> filter) {
+        public ImmutableMap<String, Object> getExplicitCommandLineStarlarkOptions() {
           return ImmutableMap.of();
         }
 
@@ -80,10 +78,10 @@ public interface OptionsProvider {
   Map<String, Object> getStarlarkOptions();
 
   /**
-   * Variant of {@link #getStarlarkOptions()} that only returns explicitly set Starlark options with
-   * the given filter criteria.
+   * Variant of {@link #getStarlarkOptions()} that only returns Starlark that were explicitly set in
+   * the command line.
    */
-  Map<String, Object> getExplicitStarlarkOptions(Predicate<? super ParsedOptionDescription> filter);
+  Map<String, Object> getExplicitCommandLineStarlarkOptions();
 
   /**
    * Returns the options that were parsed from either a user blazerc file or the command line as a
