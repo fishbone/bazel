@@ -14,8 +14,12 @@
 
 package com.google.devtools.common.options;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for parsing options from a single options specification class.
@@ -77,6 +81,21 @@ public class Options<O extends OptionsBase> {
     StringBuilder usage = new StringBuilder();
     OptionsUsage.getUsage(optionsClass, usage);
     return usage.toString();
+  }
+
+  /**
+   * Returns a mapping from option names to values, for each option on the given options class,
+   * including inherited ones. The mapping is a copy, so subsequent mutations to it or to this
+   * object are independent. Entries are sorted alphabetically.
+   */
+  public static <O extends OptionsBase> Map<String, Object> toMap(O options) {
+    ImmutableList<? extends OptionDefinition> definitions =
+        OptionsData.getAllOptionDefinitionsForClass(options.getOptionsClass());
+    LinkedHashMap<String, Object> map = Maps.newLinkedHashMapWithExpectedSize(definitions.size());
+    for (OptionDefinition definition : definitions) {
+      map.put(definition.getOptionName(), definition.getValue(options));
+    }
+    return map;
   }
 
   /**

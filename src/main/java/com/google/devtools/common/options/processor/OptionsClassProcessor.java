@@ -246,15 +246,47 @@ public final class OptionsClassProcessor extends AbstractProcessor {
             """
             package %1$s;
 
-            public class %2$s extends %3$s {
+            import com.google.devtools.common.options.Options;
+            import com.google.devtools.common.options.OptionDefinition;
+            import com.google.devtools.common.options.OptionsBase;
+            import java.util.Map;
+            import java.util.Objects;
+
+            public final class %2$s extends %3$s {
               public %2$s() {
                 super();
               }
 
               @Override
               @SuppressWarnings("unchecked")
-              public Class<? extends %3$s> getOptionsClass() {
+              public final Class<? extends %3$s> getOptionsClass() {
                 return (Class<? extends %3$s>) %3$s.class;
+              }
+
+              @Override
+              public final String toString() {
+                return %3$s.class.getName() + Options.toMap(this);
+              }
+
+              @Override
+              public final boolean equals(Object that) {
+                if (this == that) {
+                  return true;
+                }
+                if (!(that instanceof %2$s other)) {
+                  return false;
+                }
+                for (OptionDefinition def : OptionDefinition.getOptionDefinitions(getOptionsClass())) {
+                  if (!Objects.equals(def.getValue(this), def.getValue(other))) {
+                    return false;
+                  }
+                }
+                return true;
+              }
+
+              @Override
+              public final int hashCode() {
+                return %2$s.class.hashCode() + Options.toMap(this).hashCode();
               }
             """,
             packageName, implClassName, typeElement.getQualifiedName());
@@ -459,8 +491,8 @@ public final class OptionsClassProcessor extends AbstractProcessor {
           "com.google.devtools.common.options.BoolOrEnumConverterTest.",
           "com.google.devtools.common.options.EnumConverterTest.",
           "com.google.devtools.common.options.FieldOptionDefinitionTest.",
+          "com.google.devtools.common.options.OptionsTest.",
           "com.google.devtools.common.options.OptionsDataTest.",
-          "com.google.devtools.common.options.OptionsMapConversionTest.",
           "com.google.devtools.common.options.OptionsParserTest.",
           "com.google.devtools.common.options.OptionsTest.",
           "com.google.devtools.common.options.processor.OptionProcessorTest.",
