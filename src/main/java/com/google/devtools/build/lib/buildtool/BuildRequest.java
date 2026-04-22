@@ -222,7 +222,9 @@ public class BuildRequest implements OptionsProvider {
     this.id = id;
     this.startTimeMillis = startTimeMillis;
     this.userOptions =
-        options.getUserOptions() == null ? ImmutableMap.of() : options.getUserOptions();
+        options.getUserOptions() == null
+            ? ImmutableMap.of()
+            : ImmutableMap.copyOf(options.getUserOptions());
     this.optionsCache =
         Caffeine.newBuilder()
             .build(
