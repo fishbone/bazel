@@ -219,7 +219,6 @@ java_library(
         ":options_supplier",
         "//src/main/java/com/google/devtools/build/lib/util:abrupt_exit_exception",
         "//src/main/java/com/google/devtools/common/options",
-        "//third_party:guava",
     ],
 )
 
