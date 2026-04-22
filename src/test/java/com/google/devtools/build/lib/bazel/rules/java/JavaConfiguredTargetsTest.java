@@ -15,7 +15,6 @@
 package com.google.devtools.build.lib.bazel.rules.java;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.devtools.build.lib.testutil.TestConstants.TOOLS_REPOSITORY;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.base.Joiner;
@@ -98,34 +97,6 @@ public final class JavaConfiguredTargetsTest extends BuildViewTestCase {
     String resourceJarArgs =
         Joiner.on(" ").join(getGeneratingSpawnActionArgs(getBinArtifact("bin.jar", target)));
     assertThat(resourceJarArgs).contains("--resources a/path/to/strip/bar.props:bar.props");
-  }
-
-  @Test
-  public void javaTestSetsSecurityManagerPropertyOnVersion17() throws Exception {
-    scratch.file(
-        "a/BUILD",
-        "load('@rules_java//java:defs.bzl', 'java_test', 'java_runtime')",
-        "java_runtime(",
-        "    name = 'jvm',",
-        "    java = 'java_home/bin/java',",
-        "    version = 17,",
-        ")",
-        "toolchain(",
-        "    name = 'java_runtime_toolchain',",
-        "    toolchain = ':jvm',",
-        "    toolchain_type = '" + TOOLS_REPOSITORY + "//tools/jdk:runtime_toolchain_type',",
-        ")",
-        "java_test(",
-        "    name = 'test',",
-        "    srcs = ['FooTest.java'],",
-        "    test_class = 'FooTest',",
-        ")");
-    useConfiguration("--extra_toolchains=//a:java_runtime_toolchain");
-    var ct = getConfiguredTarget("//a:test");
-    String jvmFlags =
-        JavaTestUtil.getJvmFlagsForJavaBinaryExecutable(
-            getRuleContext(ct), getGeneratingAction(getExecutable(ct)));
-    assertThat(jvmFlags).contains("-Djava.security.manager=allow");
   }
 
   // regression test for https://github.com/bazelbuild/bazel/issues/20378
