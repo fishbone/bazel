@@ -17,6 +17,7 @@ java_library(
     deps = [
         ":client_id",
         ":remote_analysis_cache_client",
+        "//src/main/java/com/google/devtools/build/lib/buildeventstream/proto:build_event_stream_java_proto",
         "//src/main/java/com/google/devtools/build/lib/concurrent:thread_safety",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:frontier_node_version",
@@ -326,9 +327,11 @@ java_library(
     srcs = ["AnalysisCacheInvalidator.java"],
     deps = [
         ":client_id",
+        ":event_listener",
         ":lookup_result",
         ":remote_analysis_cache_client",
         ":remote_analysis_caching_server_state",
+        "//src/main/java/com/google/devtools/build/lib/buildeventstream/proto:build_event_stream_java_proto",
         "//src/main/java/com/google/devtools/build/lib/events",
         "//src/main/java/com/google/devtools/build/lib/profiler",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization",
@@ -402,6 +405,7 @@ java_library(
     deps = [
         ":analysis_cache_invalidator",
         ":client_id",
+        ":event_listener",
         ":options",
         ":remote_analysis_cache_client",
         ":remote_analysis_cache_deps",
