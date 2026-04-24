@@ -50,7 +50,6 @@ java_library(
 java_library(
     name = "version",
     srcs = VERSION_SRCS,
-    tags = ["bazel"],
     visibility = ["//visibility:public"],
     deps = [
         "//third_party:auto_value",
