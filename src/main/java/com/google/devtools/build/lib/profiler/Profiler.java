@@ -13,16 +13,13 @@
 // limitations under the License.
 package com.google.devtools.build.lib.profiler;
 
-import static com.google.common.base.Preconditions.checkState;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.devtools.build.lib.clock.Clock;
-import com.google.devtools.build.lib.util.TestType;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,12 +88,6 @@ public final class Profiler implements TraceProfilerService {
    * forwarded to this {@link TraceProfilerService}.
    */
   public static void setTraceProfilerService(TraceProfilerService traceProfilerService) {
-    // We want to apply this check for the shell integration tests to catch if the profiler is
-    // accidentally set twice in presubmit.
-    checkState(
-        Profiler.traceProfilerService == null
-            || (TestType.isInTest() && TestType.getTestType() != TestType.SHELL_INTEGRATION),
-        "setTraceProfilerService must not be called multiple times");
     Profiler.traceProfilerService = traceProfilerService;
   }
 
@@ -239,7 +230,7 @@ public final class Profiler implements TraceProfilerService {
     if (traceProfilerService != null) {
       return traceProfilerService.getTasksHistograms();
     }
-    return ImmutableList.of();
+    return Collections.emptyList();
   }
 
   @Override
@@ -247,7 +238,7 @@ public final class Profiler implements TraceProfilerService {
     if (traceProfilerService != null) {
       return traceProfilerService.getSlowestTasks();
     }
-    return ImmutableList.of();
+    return Collections.emptyList();
   }
 
   @Override
