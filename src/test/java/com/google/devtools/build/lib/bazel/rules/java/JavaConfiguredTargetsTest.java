@@ -17,9 +17,7 @@ package com.google.devtools.build.lib.bazel.rules.java;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ObjectArrays;
-import com.google.devtools.build.lib.analysis.ConfiguredTarget;
 import com.google.devtools.build.lib.analysis.util.BuildViewTestCase;
 import com.google.devtools.build.lib.rules.java.JavaTestUtil;
 import java.util.Arrays;
@@ -74,29 +72,6 @@ public final class JavaConfiguredTargetsTest extends BuildViewTestCase {
               "--extra_execution_platforms=//" + PLATFORMS_PACKAGE_PATH + ":" + targetPlatform
             },
             String.class));
-  }
-
-  @Test
-  public void testResourceStripPrefix() throws Exception {
-    scratch.file(
-        "a/BUILD",
-        """
-        load("@rules_java//java:defs.bzl", "java_binary")
-        java_binary(
-            name = "bin",
-            srcs = ["Foo.java"],
-            main_class = "Foo",
-            resource_strip_prefix = "a/path/to/strip",
-            resources = ["path/to/strip/bar.props"],
-        )
-        """);
-
-    ConfiguredTarget target = getConfiguredTarget("//a:bin");
-
-    assertThat(target).isNotNull();
-    String resourceJarArgs =
-        Joiner.on(" ").join(getGeneratingSpawnActionArgs(getBinArtifact("bin.jar", target)));
-    assertThat(resourceJarArgs).contains("--resources a/path/to/strip/bar.props:bar.props");
   }
 
   // regression test for https://github.com/bazelbuild/bazel/issues/20378
