@@ -224,7 +224,6 @@ java_library(
         "//src/main/java/com/google/devtools/build/lib/starlarkprofiler:cpu_profiler_module",
         "//src/main/java/com/google/devtools/build/lib/worker:worker_module",
         "//third_party:guava",
-        "//third_party:jsr305",
     ],
 )
 
