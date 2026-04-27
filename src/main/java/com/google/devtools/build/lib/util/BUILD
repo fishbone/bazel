@@ -404,6 +404,7 @@ java_library(
 java_library(
     name = "serialized_abrupt_exit_exception",
     srcs = ["SerializedAbruptExitException.java"],
+    deps = ["//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface"],
 )
 
 java_library(

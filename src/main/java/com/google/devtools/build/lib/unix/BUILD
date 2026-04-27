@@ -47,7 +47,10 @@ java_library(
         "InvalidArgumentIOException.java",
         "NativePosixFilesService.java",
     ],
-    deps = ["//src/main/java/com/google/devtools/build/lib/runtime:blaze_service"],
+    deps = [
+        "//src/main/java/com/google/devtools/build/lib/runtime:blaze_service",
+        "//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface",
+    ],
 )
 
 java_library(
@@ -71,6 +74,7 @@ java_library(
     srcs = ["ProcessUtilsService.java"],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/runtime:blaze_service",
+        "//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface",
     ],
 )
 

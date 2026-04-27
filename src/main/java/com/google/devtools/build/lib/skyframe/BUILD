@@ -3356,7 +3356,10 @@ java_library(
 java_library(
     name = "fs_events_native_deps_service",
     srcs = ["FsEventsNativeDepsService.java"],
-    deps = ["//src/main/java/com/google/devtools/build/lib/runtime:blaze_service"],
+    deps = [
+        "//src/main/java/com/google/devtools/build/lib/runtime:blaze_service",
+        "//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface",
+    ],
 )
 
 java_library(

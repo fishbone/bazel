@@ -11,18 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.google.devtools.build.lib.server;
+package com.google.devtools.build.lib.skybridge;
 
-import com.google.devtools.build.lib.runtime.BlazeService;
-import com.google.devtools.build.lib.skybridge.SkybridgeInterface;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/** A {@link BlazeService} providing a {@link GrpcCommandServer}. */
-@SkybridgeInterface
-public interface GrpcCommandServerService extends BlazeService {
-  /**
-   * Returns the {@link GrpcCommandServer}.
-   *
-   * <p>The return value is a singleton; multiple calls will return the same object.
-   */
-  GrpcCommandServer getGrpcCommandServer();
-}
+/**
+ * Annotation for classes that are part of the Skybridge (SC/LC) stable interface.
+ *
+ * <p>The annotation also applies to inner classes of the annotated class, up to an arbitrary depth.
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.CLASS)
+public @interface SkybridgeInterface {}

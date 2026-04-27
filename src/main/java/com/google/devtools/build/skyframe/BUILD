@@ -52,6 +52,7 @@ java_library(
     srcs = VERSION_SRCS,
     visibility = ["//visibility:public"],
     deps = [
+        "//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface",
         "//third_party:auto_value",
     ],
 )
@@ -60,7 +61,7 @@ java_library(
     name = "skyframe",
     srcs = glob(
         ["**/*.java"],
-        exclude = SKYFRAME_OBJECT_SRCS + ["CPUHeavySkyKey.java"],
+        exclude = SKYFRAME_OBJECT_SRCS + VERSION_SRCS + ["CPUHeavySkyKey.java"],
     ),
     deps = [
         ":cpu_heavy_skykey",

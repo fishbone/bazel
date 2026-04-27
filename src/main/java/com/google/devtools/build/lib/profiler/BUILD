@@ -76,6 +76,7 @@ java_library(
     deps = [
         "//src/main/java/com/google/devtools/build/lib/clock",
         "//src/main/java/com/google/devtools/build/lib/runtime:blaze_service",
+        "//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface",
         "//third_party:error_prone_annotations",
         "//third_party:guava",
         "//third_party:jsr305",
@@ -143,7 +144,10 @@ java_library(
 java_library(
     name = "system_network_stats_service",
     srcs = ["SystemNetworkStatsService.java"],
-    deps = ["//src/main/java/com/google/devtools/build/lib/runtime:blaze_service"],
+    deps = [
+        "//src/main/java/com/google/devtools/build/lib/runtime:blaze_service",
+        "//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface",
+    ],
 )
 
 java_library(

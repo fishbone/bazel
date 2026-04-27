@@ -14,6 +14,7 @@
 
 package com.google.devtools.build.lib.buildeventservice.client;
 
+import com.google.devtools.build.lib.skybridge.SkybridgeInterface;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.time.Instant;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import java.util.concurrent.Future;
 import javax.annotation.Nullable;
 
 /** Interface used to abstract the Stubby and gRPC client implementations. */
+@SkybridgeInterface
 public interface BuildEventServiceClient {
 
   /** Context for a build command. */

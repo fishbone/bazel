@@ -15,6 +15,7 @@ java_library(
     name = "build_event_service_client",
     srcs = ["BuildEventServiceClient.java"],
     deps = [
+        "//src/main/java/com/google/devtools/build/lib/skybridge:skybridge_interface",
         "//third_party:error_prone_annotations",
         "//third_party:guava",
         "//third_party:jsr305",
