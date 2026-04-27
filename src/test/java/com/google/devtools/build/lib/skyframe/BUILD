@@ -1204,9 +1204,6 @@ java_test(
     name = "RepoFileFunctionTest",
     timeout = "short",
     srcs = ["RepoFileFunctionTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/analysis:analysis_cluster",
         "//src/main/java/com/google/devtools/build/lib/cmdline",
@@ -1705,9 +1702,6 @@ java_test(
     name = "PrepareDepsOfPatternsFunctionTest",
     timeout = "short",
     srcs = ["PrepareDepsOfPatternsFunctionTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/bazel/bzlmod:common",
         "//src/main/java/com/google/devtools/build/lib/bazel/bzlmod:resolution_impl",
@@ -2096,9 +2090,6 @@ java_test(
     name = "BzlLoadFunctionTest",
     timeout = "moderate",
     srcs = ["BzlLoadFunctionTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/clock",
         "//src/main/java/com/google/devtools/build/lib/cmdline",

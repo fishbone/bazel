@@ -470,9 +470,6 @@ java_test(
 java_test(
     name = "DeprecationValidatorTest",
     srcs = ["DeprecationValidatorTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/test/java/com/google/devtools/build/lib/analysis/util",
         "//third_party:junit4",
@@ -594,9 +591,6 @@ java_library(
 java_test(
     name = "LocationExpanderIntegrationTest",
     srcs = ["LocationExpanderIntegrationTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/analysis:analysis_cluster",
         "//src/main/java/com/google/devtools/build/lib/analysis:configured_target",
@@ -847,9 +841,6 @@ java_test(
 java_test(
     name = "RunfilesRepoMappingManifestTest",
     srcs = ["RunfilesRepoMappingManifestTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/actions",
         "//src/main/java/com/google/devtools/build/lib/actions:commandline_item",

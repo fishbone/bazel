@@ -98,7 +98,6 @@ public class CombinedCache extends AbstractReferenceCounted {
   private final CountDownLatch closeCountDownLatch = new CountDownLatch(1);
   protected final AsyncTaskCache.NoResult<Digest> casUploadCache = AsyncTaskCache.NoResult.create();
 
-  @SuppressWarnings("AllowVirtualThreads")
   private final ListeningExecutorService virtualThreadExecutor =
       MoreExecutors.listeningDecorator(
           Executors.newThreadPerTaskExecutor(

@@ -111,7 +111,6 @@ public final class RemoteExternalOverlayFileSystem extends FileSystem {
     this.externalFs = new RemoteExternalFileSystem(nativeFs.getDigestFunction());
   }
 
-  @SuppressWarnings("AllowVirtualThreads")
   public void beforeCommand(
       CombinedCache cache,
       AbstractActionInputPrefetcher inputPrefetcher,

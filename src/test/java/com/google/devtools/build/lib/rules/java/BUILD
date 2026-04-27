@@ -184,9 +184,6 @@ java_test(
 java_test(
     name = "JavaStarlarkApiTest",
     srcs = ["JavaStarlarkApiTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         ":java-info",
         "//src/main/java/com/google/devtools/build/lib/rules/java:java-compilation",

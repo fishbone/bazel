@@ -230,7 +230,7 @@ public class RemoteExecutionCache extends CombinedCache implements MerkleTreeUpl
   }
 
   private record VirtualActionInputBlob(VirtualActionInput virtualActionInput) implements Blob {
-    @SuppressWarnings("AllowVirtualThreads")
+
     private static final ExecutorService VIRTUAL_ACTION_INPUT_PIPE_EXECUTOR =
         Executors.newThreadPerTaskExecutor(
             Thread.ofVirtual().name("virtual-action-input-pipe-", 0).factory());

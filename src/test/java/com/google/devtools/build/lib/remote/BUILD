@@ -236,7 +236,6 @@ java_library(
 java_test(
     name = "RemoteTests",
     jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
         # Required for compatibility with records.
         "-Djol.magicFieldOffset=true",
         # Match the Bazel startup flags.
@@ -281,7 +280,6 @@ java_test(
     name = "BuildWithoutTheBytesIntegrationTest",
     size = "large",
     srcs = ["BuildWithoutTheBytesIntegrationTest.java"],
-    jvm_flags = ["-Djava.lang.Thread.allowVirtualThreads=true"],
     shard_count = 5,
     tags = ["requires-network"],
     runtime_deps = [
@@ -316,7 +314,6 @@ java_test(
 java_test(
     name = "ChunkedCacheIntegrationTest",
     srcs = ["ChunkedCacheIntegrationTest.java"],
-    jvm_flags = ["-Djava.lang.Thread.allowVirtualThreads=true"],
     tags = ["requires-network"],
     runtime_deps = [
         "//third_party/grpc-java:grpc-jar",
@@ -348,7 +345,6 @@ java_test(
 java_test(
     name = "ChunkedDiskCacheIntegrationTest",
     srcs = ["ChunkedDiskCacheIntegrationTest.java"],
-    jvm_flags = ["-Djava.lang.Thread.allowVirtualThreads=true"],
     tags = ["requires-network"],
     runtime_deps = [
         "//third_party/grpc-java:grpc-jar",
@@ -376,7 +372,6 @@ java_test(
 java_test(
     name = "DiskCacheIntegrationTest",
     srcs = ["DiskCacheIntegrationTest.java"],
-    jvm_flags = ["-Djava.lang.Thread.allowVirtualThreads=true"],
     tags = ["requires-network"],
     runtime_deps = [
         "//third_party/grpc-java:grpc-jar",

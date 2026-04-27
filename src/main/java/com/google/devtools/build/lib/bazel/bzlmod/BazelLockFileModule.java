@@ -66,7 +66,6 @@ public class BazelLockFileModule extends BlazeModule {
   }
 
   @Override
-  @SuppressWarnings("AllowVirtualThreads")
   public void afterCommand() {
     MemoizingEvaluator evaluator = executor.getEvaluator();
     BazelModuleResolutionValue moduleResolutionValue;

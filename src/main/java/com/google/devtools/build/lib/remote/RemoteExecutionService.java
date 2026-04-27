@@ -193,7 +193,6 @@ public class RemoteExecutionService {
   @Nullable private final Path captureCorruptedOutputsDir;
   private final Set<String> reportedErrors = new HashSet<>();
 
-  @SuppressWarnings("AllowVirtualThreads")
   private final ListeningExecutorService backgroundTaskExecutor =
       MoreExecutors.listeningDecorator(
           Executors.newThreadPerTaskExecutor(

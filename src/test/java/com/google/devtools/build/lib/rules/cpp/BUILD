@@ -184,9 +184,6 @@ java_test(
     name = "CcCommonTest",
     timeout = "long",
     srcs = ["CcCommonTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/actions",
         "//src/main/java/com/google/devtools/build/lib/actions:artifacts",
@@ -370,9 +367,6 @@ java_test(
 java_test(
     name = "CompileBuildVariablesTest",
     srcs = ["CompileBuildVariablesTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/actions:artifacts",
         "//src/main/java/com/google/devtools/build/lib/analysis:analysis_cluster",
@@ -694,9 +688,6 @@ java_test(
 java_test(
     name = "LibrariesToLinkCollectorTest",
     srcs = ["LibrariesToLinkCollectorTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/actions:artifacts",
         "//src/main/java/com/google/devtools/build/lib/analysis:analysis_cluster",

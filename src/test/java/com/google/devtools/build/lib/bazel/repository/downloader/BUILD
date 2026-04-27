@@ -39,9 +39,6 @@ java_test(
     name = "DownloaderTestSuite",
     size = "medium",
     flaky = True,
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     tags = [
         "requires-network",
         "rules",

@@ -65,9 +65,6 @@ java_test(
 java_test(
     name = "RegisteredExecutionPlatformsFunctionTest",
     srcs = ["RegisteredExecutionPlatformsFunctionTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/analysis:view_creation_failed_exception",
         "//src/main/java/com/google/devtools/build/lib/analysis/platform",
@@ -92,9 +89,6 @@ java_test(
 java_test(
     name = "RegisteredToolchainsFunctionTest",
     srcs = ["RegisteredToolchainsFunctionTest.java"],
-    jvm_flags = [
-        "-Djava.lang.Thread.allowVirtualThreads=true",
-    ],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/analysis/platform",
         "//src/main/java/com/google/devtools/build/lib/cmdline",

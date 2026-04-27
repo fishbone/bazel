@@ -171,7 +171,6 @@ import org.openjdk.jol.info.GraphLayout;
 
 /** Tests for {@link RemoteExecutionService}. */
 @RunWith(TestParameterInjector.class)
-@SuppressWarnings("AllowVirtualThreads")
 public class RemoteExecutionServiceTest {
   @Rule public final MockitoRule mockito = MockitoJUnit.rule();
   @Rule public final RxNoGlobalErrorsRule rxNoGlobalErrorsRule = new RxNoGlobalErrorsRule();
