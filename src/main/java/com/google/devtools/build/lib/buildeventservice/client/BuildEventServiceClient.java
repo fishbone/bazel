@@ -14,7 +14,7 @@
 
 package com.google.devtools.build.lib.buildeventservice.client;
 
-import com.google.auto.value.AutoBuilder;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
@@ -42,26 +42,65 @@ public interface BuildEventServiceClient {
     }
 
     public static Builder builder() {
-      return new AutoBuilder_BuildEventServiceClient_CommandContext_Builder();
+      return new Builder();
     }
 
     /** Builder for {@link CommandContext}. */
-    @AutoBuilder
-    public abstract static class Builder {
-      public abstract Builder setBuildId(String buildId);
+    public static final class Builder {
+      private String buildId;
+      private String invocationId;
+      private int attemptNumber;
+      private Set<String> keywords;
+      private String projectId;
+      private boolean checkPrecedingLifecycleEvents;
 
-      public abstract Builder setInvocationId(String invocationId);
+      private Builder() {}
 
-      public abstract Builder setAttemptNumber(int attemptNumber);
+      @CanIgnoreReturnValue
+      public Builder setBuildId(String buildId) {
+        this.buildId = buildId;
+        return this;
+      }
 
-      public abstract Builder setKeywords(Set<String> keywords);
+      @CanIgnoreReturnValue
+      public Builder setInvocationId(String invocationId) {
+        this.invocationId = invocationId;
+        return this;
+      }
 
-      public abstract Builder setProjectId(@Nullable String projectId);
+      @CanIgnoreReturnValue
+      public Builder setAttemptNumber(int attemptNumber) {
+        this.attemptNumber = attemptNumber;
+        return this;
+      }
 
-      public abstract Builder setCheckPrecedingLifecycleEvents(
-          boolean checkPrecedingLifecycleEvents);
+      @CanIgnoreReturnValue
+      public Builder setKeywords(Set<String> keywords) {
+        this.keywords = keywords;
+        return this;
+      }
 
-      public abstract CommandContext build();
+      @CanIgnoreReturnValue
+      public Builder setProjectId(@Nullable String projectId) {
+        this.projectId = projectId;
+        return this;
+      }
+
+      @CanIgnoreReturnValue
+      public Builder setCheckPrecedingLifecycleEvents(boolean checkPrecedingLifecycleEvents) {
+        this.checkPrecedingLifecycleEvents = checkPrecedingLifecycleEvents;
+        return this;
+      }
+
+      public CommandContext build() {
+        return new CommandContext(
+            buildId,
+            invocationId,
+            attemptNumber,
+            keywords,
+            projectId,
+            checkPrecedingLifecycleEvents);
+      }
     }
   }
 
