@@ -303,6 +303,7 @@ import com.google.devtools.common.options.OptionsParsingResult;
 import com.google.devtools.common.options.OptionsProvider;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.ForOverride;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -3396,10 +3397,18 @@ public abstract class SkyframeExecutor implements WalkableGraphFactory {
         throw new RepositoryMappingResolutionException(
             ((DetailedException) e).getDetailedExitCode(), e);
       }
+      // An IOException at this early stage is often due to transient infrastructure issues. We
+      // give such failures a specific error code so that they can be retried.
+      FailureDetails.ExternalRepository externalRepoDetail =
+          e instanceof IOException
+              ? FailureDetails.ExternalRepository.newBuilder()
+                  .setCode(ExternalRepository.Code.REPOSITORY_MAPPING_IO_EXCEPTION)
+                  .build()
+              : FailureDetails.ExternalRepository.getDefaultInstance();
       throw new RepositoryMappingResolutionException(
           DetailedExitCode.of(
               FailureDetail.newBuilder()
-                  .setExternalRepository(FailureDetails.ExternalRepository.getDefaultInstance())
+                  .setExternalRepository(externalRepoDetail)
                   .setMessage("error during computation of main repo mapping: " + e.getMessage())
                   .build()),
           e);
