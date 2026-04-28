@@ -13,6 +13,7 @@
 // limitations under the License.
 package com.google.devtools.build.lib.runtime;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.BaseEncoding;
@@ -180,11 +181,18 @@ public abstract class CommandLineEvent implements BuildEventWithOrderConstraint 
     }
 
     Option createSingleStarlarkOption(String starlarkFlag, @Nullable Object value) {
-      // TODO(bazel-team): fix stringification of `value` if non-scalar.
-      String combinedForm =
-          value != null ? String.format("--%s=%s", starlarkFlag, value) : "--" + starlarkFlag;
+      StringBuilder sb = new StringBuilder("--").append(starlarkFlag);
+      if (value != null) {
+        sb.append("=");
+        if (value instanceof Collection<?> values) {
+          // Render non-repeatable lists/sets as comma-separated
+          Joiner.on(",").appendTo(sb, values);
+        } else {
+          sb.append(value);
+        }
+      }
       Option.Builder option = Option.newBuilder();
-      option.setCombinedForm(combinedForm);
+      option.setCombinedForm(sb.toString());
       option.setOptionName(starlarkFlag);
       if (value != null) {
         option.setOptionValue(String.valueOf(value));

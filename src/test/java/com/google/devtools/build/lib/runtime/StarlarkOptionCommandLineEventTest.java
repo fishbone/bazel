@@ -331,4 +331,60 @@ public class StarlarkOptionCommandLineEventTest extends StarlarkOptionsTestCase 
             "--//flags:singular=abc")
         .inOrder();
   }
+
+  @Test
+  public void testStarlarkOptions_nonRepeatableListsAndSets() throws Exception {
+    OptionsParser fakeStartupOptions =
+        OptionsParser.builder().optionsClasses(BlazeServerStartupOptions.class).build();
+    scratch.file(
+        "flags/build_settings.bzl",
+        """
+        def _impl(ctx):
+            return []
+
+        non_repeatable_list_flag = rule(
+            implementation = _impl,
+            build_setting = config.string_list(flag = True, repeatable = False),
+        )
+
+        non_repeatable_set_flag = rule(
+            implementation = _impl,
+            build_setting = config.string_set(flag = True, repeatable = False),
+        )
+        """);
+
+    scratch.file(
+        "flags/BUILD",
+        """
+        load(":build_settings.bzl", "non_repeatable_list_flag", "non_repeatable_set_flag")
+        non_repeatable_list_flag(name = "non_repeatable_list", build_setting_default = [])
+        non_repeatable_set_flag(name = "non_repeatable_set", build_setting_default = set([]))
+        """);
+
+    var unused =
+        parseStarlarkOptions(
+            "--//flags:non_repeatable_list=h,e,l,l,o --//flags:non_repeatable_set=h,e,l,l,o");
+
+    CommandLine line =
+        new OriginalCommandLineEvent(
+                "testblaze",
+                fakeStartupOptions,
+                "someCommandName",
+                ImmutableList.of(),
+                false,
+                optionsParser.asListOfExplicitOptions(),
+                optionsParser.getStarlarkOptions(),
+                optionsParser.getStarlarkOptionsAllowingMultiple(),
+                Optional.empty())
+            .asStreamProto(null)
+            .getStructuredCommandLine();
+    assertThat(
+            line.getSections(3).getOptionList().getOptionList().stream()
+                .map(Option::getCombinedForm)
+                .collect(toImmutableList()))
+        .containsExactly(
+            // Lists are preserved; sets are deduped and sorted; both rendered as comma-separated.
+            "--//flags:non_repeatable_list=h,e,l,l,o", "--//flags:non_repeatable_set=e,h,l,o")
+        .inOrder();
+  }
 }
