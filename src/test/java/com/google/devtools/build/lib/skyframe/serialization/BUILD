@@ -442,6 +442,8 @@ java_library(
         "//src/main/java/com/google/devtools/build/lib/collect:iterable_codecs",
     ],
     deps = [
+        "//src/main/java/com/google/devtools/build/lib/analysis/config:build_options",
+        "//src/main/java/com/google/devtools/build/lib/analysis/config:core_options",
         "//src/main/java/com/google/devtools/build/lib/cmdline",
         "//src/main/java/com/google/devtools/build/lib/events",
         "//src/main/java/com/google/devtools/build/lib/skyframe:precomputed_value",
@@ -449,6 +451,7 @@ java_library(
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:depend_on_future_shim",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:error_message_helper",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:frontier_node_version",
+        "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:serialization_registry_setup_helpers",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:visible-for-serialization",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization:write_statuses",
         "//src/main/java/com/google/devtools/build/lib/skyframe/serialization/analysis:client_id",

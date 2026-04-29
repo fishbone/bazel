@@ -34,6 +34,7 @@ import com.google.devtools.build.lib.actions.Artifact.ArtifactSerializationConte
 import com.google.devtools.build.lib.analysis.BlazeDirectories;
 import com.google.devtools.build.lib.analysis.BlazeVersionInfo;
 import com.google.devtools.build.lib.analysis.config.BuildOptions;
+import com.google.devtools.build.lib.analysis.config.CoreOptions;
 import com.google.devtools.build.lib.analysis.config.FragmentOptions;
 import com.google.devtools.build.lib.analysis.config.InvalidConfigurationException;
 import com.google.devtools.build.lib.analysis.test.TestConfiguration;
@@ -107,6 +108,22 @@ public final class RemoteAnalysisCacheFactory {
           RemoteAnalysisCacheManager.createDisabled(), disabledDeps, disabledDeps);
     }
 
+    if (options.getMode() == RemoteAnalysisCacheMode.UPLOAD
+        || options.getMode() == RemoteAnalysisCacheMode.DUMP_UPLOAD_MANIFEST_ONLY) {
+      CoreOptions coreOptions = topLevelOptions.get(CoreOptions.class);
+      if (coreOptions != null && !coreOptions.getCheckVisibility()) {
+        throw new AbruptExitException(
+            DetailedExitCode.of(
+                FailureDetail.newBuilder()
+                    .setMessage(
+                        "Skycache upload mode requires --check_visibility=true, but it was false.")
+                    .setRemoteAnalysisCaching(
+                        RemoteAnalysisCaching.newBuilder()
+                            .setCode(RemoteAnalysisCaching.Code.INCOMPATIBLE_OPTIONS))
+                    .build()));
+      }
+    }
+
     // Set up active directory matcher
 
     Optional<PathFragmentPrefixTrie> maybeActiveDirectoriesMatcherFromFlags =
@@ -133,9 +150,17 @@ public final class RemoteAnalysisCacheFactory {
                         env.getOptions().getOptions(BuildLanguageOptions.class)))
             .toByteArray();
 
+    // Skycache builds are primed with --check_visibility=true, so all cached entries
+    // are computed with visibility checking turned on. In download mode, if the user specified
+    // --check_visibility=false, we compute configuration checksums as if it
+    // were true so that we can reuse entries from the cache despite the
+    // different visibility settings. This is safe as long as we don't cache
+    // failures.
+    BuildOptions trimmedTopLevelOptions = trimConfigurations(topLevelOptions);
+
     FrontierNodeVersion frontierNodeVersion =
         new FrontierNodeVersion(
-            topLevelOptions.checksum(),
+            trimmedTopLevelOptions.checksum(),
             blazeInstallMD5,
             starlarkSemanticsFingerprint,
             workspaceInfoFromDiff.getEvaluatingVersion(),
@@ -151,7 +176,7 @@ public final class RemoteAnalysisCacheFactory {
     // Create various objets we need
 
     RemoteAnalysisJsonLogWriter jsonLogWriter = createJsonLogWriterMaybe(env, options);
-    ListenableFuture<ObjectCodecs> objectCodecs = createObjectCodecs(env);
+    ListenableFuture<ObjectCodecs> objectCodecs = createObjectCodecs(env, topLevelOptions);
 
     RemoteAnalysisCachingServicesSupplier servicesSupplier =
         env.getBlazeWorkspace().remoteAnalysisCachingServicesSupplier();
@@ -174,7 +199,7 @@ public final class RemoteAnalysisCacheFactory {
     }
 
     if (skycacheMetadataParams != null) {
-      skycacheMetadataParams.setConfigurationHash(topLevelOptions.checksum());
+      skycacheMetadataParams.setConfigurationHash(trimmedTopLevelOptions.checksum());
       skycacheMetadataParams.setOriginalConfigurationOptions(
           getConfigurationOptionsAsStrings(topLevelOptions));
     }
@@ -297,7 +322,8 @@ public final class RemoteAnalysisCacheFactory {
       ObjectCodecRegistry registry,
       RuleClassProvider ruleClassProvider,
       SkyframeExecutor skyframeExecutor,
-      BlazeDirectories directories) {
+      BlazeDirectories directories,
+      BuildOptions topLevelOptions) {
     var roots = ImmutableList.<Root>builder().add(Root.fromPath(directories.getWorkspace()));
     // TODO: b/406458763 - clean this up
     if (Ascii.equalsIgnoreCase(directories.getProductName(), "blaze")) {
@@ -313,12 +339,14 @@ public final class RemoteAnalysisCacheFactory {
             .put(RootCodecDependencies.class, new RootCodecDependencies(roots.build()))
             .put(PackagePathCodecDependencies.class, skyframeExecutor::getPackagePathEntries)
             // This is needed to determine TargetData for a ConfiguredTarget during serialization.
-            .put(PrerequisitePackageFunction.class, skyframeExecutor::getExistingPackage);
+            .put(PrerequisitePackageFunction.class, skyframeExecutor::getExistingPackage)
+            .put(BuildOptions.class, topLevelOptions);
 
     return new ObjectCodecs(registry, serializationDeps.build());
   }
 
-  private static ListenableFuture<ObjectCodecs> createObjectCodecs(CommandEnvironment env) {
+  private static ListenableFuture<ObjectCodecs> createObjectCodecs(
+      CommandEnvironment env, BuildOptions topLevelOptions) {
     return Futures.submit(
         () ->
             initAnalysisObjectCodecs(
@@ -326,8 +354,19 @@ public final class RemoteAnalysisCacheFactory {
                     .get(),
                 env.getRuntime().getRuleClassProvider(),
                 env.getBlazeWorkspace().getSkyframeExecutor(),
-                env.getDirectories()),
+                env.getDirectories(),
+                topLevelOptions),
         commonPool());
+  }
+
+  private static BuildOptions trimConfigurations(BuildOptions options) {
+    CoreOptions coreOptions = options.get(CoreOptions.class);
+    if (coreOptions != null && !coreOptions.getCheckVisibility()) {
+      BuildOptions.Builder builder = options.toBuilder();
+      builder.getFragmentOptions(CoreOptions.class).setCheckVisibility(true);
+      return builder.build();
+    }
+    return options;
   }
 
   @Nullable // In case we don't expect a connection to the analysis cache server

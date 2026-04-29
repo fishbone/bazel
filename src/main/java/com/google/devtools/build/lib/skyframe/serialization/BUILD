@@ -23,8 +23,10 @@ java_library(
 java_library(
     name = "serialization_registry_setup_helpers",
     srcs = ["SerializationRegistrySetupHelpers.java"],
-    deps = [
+    runtime_deps = [
         ":builtin_manager_codec",
+    ],
+    deps = [
         ":module_codec",
         ":serialization",
         "//src/main/java/com/google/devtools/build/lib/actions:artifacts",
@@ -36,6 +38,7 @@ java_library(
         "//src/main/java/com/google/devtools/build/lib/analysis:transitive_info_provider_map_impl",
         "//src/main/java/com/google/devtools/build/lib/analysis/config:build_configuration",
         "//src/main/java/com/google/devtools/build/lib/analysis/config:build_options",
+        "//src/main/java/com/google/devtools/build/lib/analysis/config:core_options",
         "//src/main/java/com/google/devtools/build/lib/cmdline",
         "//src/main/java/com/google/devtools/build/lib/collect/nestedset",
         "//src/main/java/com/google/devtools/build/lib/packages",
@@ -50,6 +53,7 @@ java_library(
         "//src/main/java/net/starlark/java/syntax",
         "//third_party:error_prone_annotations",
         "//third_party:guava",
+        "@com_google_protobuf//:protobuf_java",
     ],
 )
 
