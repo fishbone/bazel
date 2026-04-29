@@ -215,8 +215,17 @@ public final class JavaHeaderCompileAction extends SpawnAction {
 
     private boolean parallelism = true;
 
+    private String fixDepsTool = null;
+
     private Builder(RuleContext ruleContext) {
       this.ruleContext = ruleContext;
+    }
+
+    @CanIgnoreReturnValue
+    public Builder setFixDepsTool(String fixDepsTool) {
+      checkNotNull(fixDepsTool, "fixDepsTool must not be null");
+      this.fixDepsTool = fixDepsTool;
+      return this;
     }
 
     /** Sets the output jdeps file. */
@@ -526,6 +535,8 @@ public final class JavaHeaderCompileAction extends SpawnAction {
               "@", targetLabel, ruleContext.getAnalysisEnvironment().getMainRepoMapping());
         }
       }
+
+      commandLine.add("--experimental_fix_deps_tool", fixDepsTool);
 
       ImmutableMap.Builder<String, String> executionInfo = ImmutableMap.builder();
       executionInfo.putAll(
